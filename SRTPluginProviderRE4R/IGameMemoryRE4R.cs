@@ -9,6 +9,18 @@ namespace SRTPluginProviderRE4R
 
         string VersionInfo { get; }
 
+        EntityHealth PlayerHealth { get; }
+
+        int EnemyArraySize { get; }
+
+        EntityHealth[] EnemyHealth { get; }
+
+        int ChapterKillCount { get; }
+
+        GameRank Rank { get; }
+
+        long ChapterTimeStart { get; }
+
         GameTimer Timer { get; }
 
         long IGTCalculated { get; }

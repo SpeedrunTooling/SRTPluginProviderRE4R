@@ -14,11 +14,29 @@ namespace SRTPluginProviderRE4R
 
         public string VersionInfo => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
+        public EntityHealth PlayerHealth { get => playerHealth; }
+        internal EntityHealth playerHealth;
+
+        public int EnemyArraySize { get => enemyArraySize; }
+        internal int enemyArraySize;
+
+        public EntityHealth[] EnemyHealth { get => enemyHealth; }
+        internal EntityHealth[] enemyHealth;
+
+        public int ChapterKillCount { get => chapterKillCount; }
+        internal int chapterKillCount;
+
+        public GameRank Rank { get => rank; }
+        internal GameRank rank;
+
+        public long ChapterTimeStart { get => chapterTimeStart; }
+        internal long chapterTimeStart;
+
         public GameTimer Timer { get => timer; }
         internal GameTimer timer;
 
         // Public Properties - Calculated
-        public long IGTCalculated => unchecked(Timer.IGTRunningTimer - Timer.IGTCutsceneTimer - Timer.IGTPausedTimer);
+        public long IGTCalculated => 0L;//unchecked(ChapterTimeStart < 0 ? 0L : (ChapterTimeStart - Timer.IGTRunningTimer - Timer.IGTCutsceneTimer - Timer.IGTPausedTimer));
 
         public long IGTCalculatedTicks => unchecked(IGTCalculated * 10L);
 

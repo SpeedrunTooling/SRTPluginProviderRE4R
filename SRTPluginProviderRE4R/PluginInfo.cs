@@ -9,7 +9,7 @@ namespace SRTPluginProviderRE4R
 
         public string Description => "A game memory producer plugin for Resident Evil 4 (2023).";
 
-        public string Author => "TheDementedSalad";
+        public string Author => "TheDementedSalad, Squirrelies";
 
         public Uri MoreInfoURL => new Uri("https://github.com/SpeedrunTooling/SRTPluginProviderRE4R");
 
