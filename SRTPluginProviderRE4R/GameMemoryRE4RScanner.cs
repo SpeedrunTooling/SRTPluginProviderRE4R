@@ -25,9 +25,11 @@ namespace SRTPluginProviderRE4R
         private MultilevelPointer PointerPlayerHealth { get; set; }
         private MultilevelPointer PointerEnemyCount { get; set; }
         private MultilevelPointer[] PointerEnemyHealth { get; set; }
-        private MultilevelPointer PointerGameStatsManagerOngoingStats { get; set; }
+        private MultilevelPointer PointerGameStatsManagerOngoingStatsChapterLapTime { get; set; }
+        private MultilevelPointer PointerGameStatsManagerOngoingStatsKillCount { get; set; }
         private MultilevelPointer PointerGameRankManager { get; set; }
-        private MultilevelPointer PointerGameClock { get; set; }
+        private MultilevelPointer PointerGameClockSystemSaveData { get; set; }
+        private MultilevelPointer PointerGameClockGameSaveData { get; set; }
 
         internal GameMemoryRE4RScanner(Process process = null)
         {
@@ -52,9 +54,11 @@ namespace SRTPluginProviderRE4R
 
                 // Setup the pointers.
                 GenerateEntityHealthPointers();
-                PointerGameStatsManagerOngoingStats = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20);
+                PointerGameStatsManagerOngoingStatsChapterLapTime = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x10);
+                PointerGameStatsManagerOngoingStatsKillCount = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x18);
                 PointerGameRankManager = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameRankManager));
-                PointerGameClock = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock));
+                PointerGameClockSystemSaveData = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x18);
+                PointerGameClockGameSaveData = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x20);
             }
         }
 
@@ -79,6 +83,16 @@ namespace SRTPluginProviderRE4R
 
             // If we made it this far... rest in pepperonis. We have failed to detect any of the correct versions we support and have no idea what pointer addresses to use. Bail out.
             return false;
+        }
+
+        internal void UpdatePointers()
+        {
+            GenerateEntityHealthPointers();
+            PointerGameStatsManagerOngoingStatsChapterLapTime.UpdatePointers();
+            PointerGameStatsManagerOngoingStatsKillCount.UpdatePointers();
+            PointerGameRankManager.UpdatePointers();
+            PointerGameClockSystemSaveData.UpdatePointers();
+            PointerGameClockGameSaveData.UpdatePointers();
         }
 
         private unsafe void GenerateEntityHealthPointers()
@@ -110,17 +124,6 @@ namespace SRTPluginProviderRE4R
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        internal void UpdatePointers()
-        {
-            GenerateEntityHealthPointers();
-            PointerGameStatsManagerOngoingStats.UpdatePointers();
-            PointerGameRankManager.UpdatePointers();
-            PointerGameClock.UpdatePointers();
-        }
-
         internal unsafe IGameMemoryRE4R Refresh()
         {
             gameMemoryValues.playerHealth = PointerPlayerHealth.Deref<HitPoint>(0);
@@ -128,10 +131,10 @@ namespace SRTPluginProviderRE4R
                 gameMemoryValues.enemyHealth[i] = PointerEnemyHealth[i].Deref<HitPoint>(0);
 
             gameMemoryValues.rank = PointerGameRankManager.Deref<GameRankSystem>(0);
-            gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStats.Deref<GameStatsChapterLapTimeElement>(0x10);
-            gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStats.Deref<GameStatsKillCountElement>(0x18);
-            gameMemoryValues.systemSaveData = PointerGameClock.Deref<SystemSaveData>(0x18);
-            gameMemoryValues.gameSaveData = PointerGameClock.Deref<GameSaveData>(0x20);
+            gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStatsChapterLapTime.Deref<GameStatsChapterLapTimeElement>(0);
+            gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount.Deref<GameStatsKillCountElement>(0);
+            gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
+            gameMemoryValues.gameSaveData = PointerGameClockGameSaveData.Deref<GameSaveData>(0);
 
             HasScanned = true;
             return gameMemoryValues;
