@@ -9,19 +9,21 @@ namespace SRTPluginProviderRE4R
 
         string VersionInfo { get; }
 
-        EntityHealth PlayerHealth { get; }
+        HitPoint PlayerHealth { get; }
 
         int EnemyArraySize { get; }
 
-        EntityHealth[] EnemyHealth { get; }
+        HitPoint[] EnemyHealth { get; }
 
-        int ChapterKillCount { get; }
+        GameRankSystem Rank { get; }
 
-        GameRank Rank { get; }
+        GameStatsChapterLapTimeElement GameStatsChapterLapTimeElement { get; }
 
-        long ChapterTimeStart { get; }
+        GameStatsKillCountElement GameStatsKillCountElement { get; }
 
-        GameTimer Timer { get; }
+        SystemSaveData SystemSaveData { get; }
+
+        GameSaveData GameSaveData { get; }
 
         long IGTCalculated { get; }
 

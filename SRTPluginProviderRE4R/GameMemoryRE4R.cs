@@ -14,29 +14,32 @@ namespace SRTPluginProviderRE4R
 
         public string VersionInfo => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
-        public EntityHealth PlayerHealth { get => playerHealth; }
-        internal EntityHealth playerHealth;
+        public HitPoint PlayerHealth { get => playerHealth; }
+        internal HitPoint playerHealth;
 
         public int EnemyArraySize { get => enemyArraySize; }
         internal int enemyArraySize;
 
-        public EntityHealth[] EnemyHealth { get => enemyHealth; }
-        internal EntityHealth[] enemyHealth;
+        public HitPoint[] EnemyHealth { get => enemyHealth; }
+        internal HitPoint[] enemyHealth;
 
-        public int ChapterKillCount { get => chapterKillCount; }
-        internal int chapterKillCount;
+        public GameRankSystem Rank { get => rank; }
+        internal GameRankSystem rank;
 
-        public GameRank Rank { get => rank; }
-        internal GameRank rank;
+        public GameStatsChapterLapTimeElement GameStatsChapterLapTimeElement { get => gameStatsChapterLapTimeElement; }
+        internal GameStatsChapterLapTimeElement gameStatsChapterLapTimeElement;
 
-        public long ChapterTimeStart { get => chapterTimeStart; }
-        internal long chapterTimeStart;
+        public GameStatsKillCountElement GameStatsKillCountElement { get => gameStatsKillCountElement; }
+        internal GameStatsKillCountElement gameStatsKillCountElement;
 
-        public GameTimer Timer { get => timer; }
-        internal GameTimer timer;
+        public SystemSaveData SystemSaveData { get => systemSaveData; }
+        internal SystemSaveData systemSaveData;
+
+        public GameSaveData GameSaveData { get => gameSaveData; }
+        internal GameSaveData gameSaveData;
 
         // Public Properties - Calculated
-        public long IGTCalculated => 0L;//unchecked(ChapterTimeStart < 0 ? 0L : (ChapterTimeStart - Timer.IGTRunningTimer - Timer.IGTCutsceneTimer - Timer.IGTPausedTimer));
+        public long IGTCalculated => 0L;//unchecked((long)(GameStatsChapterLapTimeElement.Time < 0UL ? 0UL : (GameStatsChapterLapTimeElement.Time - GameSaveData.GameElapsedTime - GameSaveData.DemoSpendingTime - GameSaveData.PauseSpendingTime)));
 
         public long IGTCalculatedTicks => unchecked(IGTCalculated * 10L);
 

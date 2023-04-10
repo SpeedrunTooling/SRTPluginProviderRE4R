@@ -3,13 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace SRTPluginProviderRE4R.Structs
 {
-    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x0C)]
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x88)]
     [DebuggerDisplay("{_DebuggerDisplay,nq}")]
-    public struct GameRank
+    public struct GameRankSystem
     {
-        [FieldOffset(0x0)] private int rank;
-        [FieldOffset(0x4)] private float actionPoint;
-        [FieldOffset(0x8)] private float itemPoint;
+        [FieldOffset(0x10)] private int rank;
+        [FieldOffset(0x14)] private float actionPoint;
+        [FieldOffset(0x18)] private float itemPoint;
 
         public int Rank => rank;
         public float ActionPoint => actionPoint;

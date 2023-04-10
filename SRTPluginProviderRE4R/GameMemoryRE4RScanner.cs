@@ -18,16 +18,16 @@ namespace SRTPluginProviderRE4R
         private int pointerAddressEntity;
         private int pointerAddressGameStatsManager;
         private int pointerAddressGameRankManager;
-        private int pointerAddressIGT;
+        private int pointerAddressGameClock;
 
         // Pointer Classes
         private IntPtr BaseAddress { get; set; }
         private MultilevelPointer PointerPlayerHealth { get; set; }
         private MultilevelPointer PointerEnemyCount { get; set; }
         private MultilevelPointer[] PointerEnemyHealth { get; set; }
-        private MultilevelPointer PointerGameStatsManager { get; set; }
+        private MultilevelPointer PointerGameStatsManagerOngoingStats { get; set; }
         private MultilevelPointer PointerGameRankManager { get; set; }
-        private MultilevelPointer PointerIGT { get; set; }
+        private MultilevelPointer PointerGameClock { get; set; }
 
         internal GameMemoryRE4RScanner(Process process = null)
         {
@@ -52,9 +52,9 @@ namespace SRTPluginProviderRE4R
 
                 // Setup the pointers.
                 GenerateEntityHealthPointers();
-                PointerGameStatsManager = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x10);
+                PointerGameStatsManagerOngoingStats = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20);
                 PointerGameRankManager = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameRankManager));
-                PointerIGT = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressIGT), 0x20);
+                PointerGameClock = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock));
             }
         }
 
@@ -62,13 +62,18 @@ namespace SRTPluginProviderRE4R
         {
             switch (version)
             {
+                case GameVersion.RE4R_WW_20230407_1:
+                    {
+                        pointerAddressEntity = 0x0D22B0A0;
+                        pointerAddressGameStatsManager = 0x0D217780;
+                        pointerAddressGameRankManager = 0x0D22B1A0;
+                        pointerAddressGameClock = 0x0D22D7D0;
+                        return true;
+                    }
+
                 case GameVersion.RE4R_WW_20230323_1:
                     {
-                        pointerAddressEntity = 0x0D23E618;
-                        pointerAddressGameStatsManager = 0x0D20FF80;
-                        pointerAddressGameRankManager = 0x0D23F000;
-                        pointerAddressIGT = 0x0D234048;
-                        return true;
+                        return false; // No longer supported due to structure changes.
                     }
             }
 
@@ -93,7 +98,7 @@ namespace SRTPluginProviderRE4R
                 gameMemoryValues.enemyHealth is null || gameMemoryValues.enemyHealth.Length != gameMemoryValues.enemyArraySize)
             {
                 PointerEnemyHealth = new MultilevelPointer[gameMemoryValues.enemyArraySize];
-                gameMemoryValues.enemyHealth = new EntityHealth[gameMemoryValues.enemyArraySize];
+                gameMemoryValues.enemyHealth = new HitPoint[gameMemoryValues.enemyArraySize];
             }
 
             for (int i = 0; i < PointerEnemyHealth.Length; ++i)
@@ -111,23 +116,22 @@ namespace SRTPluginProviderRE4R
         internal void UpdatePointers()
         {
             GenerateEntityHealthPointers();
-            PointerGameStatsManager.UpdatePointers();
+            PointerGameStatsManagerOngoingStats.UpdatePointers();
             PointerGameRankManager.UpdatePointers();
-            PointerIGT.UpdatePointers();
+            PointerGameClock.UpdatePointers();
         }
 
         internal unsafe IGameMemoryRE4R Refresh()
         {
-            gameMemoryValues.playerHealth = PointerPlayerHealth.Deref<EntityHealth>(0x10);
+            gameMemoryValues.playerHealth = PointerPlayerHealth.Deref<HitPoint>(0);
             for (int i = 0; i < gameMemoryValues.enemyArraySize; ++i)
-                gameMemoryValues.enemyHealth[i] = PointerEnemyHealth[i].Deref<EntityHealth>(0x10);
+                gameMemoryValues.enemyHealth[i] = PointerEnemyHealth[i].Deref<HitPoint>(0);
 
-            gameMemoryValues.chapterKillCount = PointerGameStatsManager.DerefInt(0x34);
-            gameMemoryValues.rank = PointerGameRankManager.Deref<GameRank>(0x10);
-
-            // IGT
-            gameMemoryValues.chapterTimeStart = PointerGameStatsManager.DerefLong(0x18);
-            gameMemoryValues.timer = PointerIGT.Deref<GameTimer>(0x18);
+            gameMemoryValues.rank = PointerGameRankManager.Deref<GameRankSystem>(0);
+            gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStats.Deref<GameStatsChapterLapTimeElement>(0x10);
+            gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStats.Deref<GameStatsKillCountElement>(0x18);
+            gameMemoryValues.systemSaveData = PointerGameClock.Deref<SystemSaveData>(0x18);
+            gameMemoryValues.gameSaveData = PointerGameClock.Deref<GameSaveData>(0x20);
 
             HasScanned = true;
             return gameMemoryValues;
