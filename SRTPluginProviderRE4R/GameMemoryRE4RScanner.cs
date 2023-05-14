@@ -12,24 +12,26 @@ namespace SRTPluginProviderRE4R
         private GameMemoryRE4R gameMemoryValues;
         public bool HasScanned;
         public bool ProcessRunning => memoryAccess != null && memoryAccess.ProcessRunning;
-        public int ProcessExitCode => (memoryAccess != null) ? memoryAccess.ProcessExitCode : 0;
+        public uint ProcessExitCode => (memoryAccess != null) ? memoryAccess.ProcessExitCode : 0;
 
         // Pointer Address Variables
-        private int pointerAddressEntity;
+        private int pointerAddressCharacterManager;
         private int pointerAddressGameStatsManager;
         private int pointerAddressGameRankManager;
         private int pointerAddressGameClock;
 
         // Pointer Classes
         private IntPtr BaseAddress { get; set; }
+        private MultilevelPointer PointerCharacterContext { get; set; }
+        private MultilevelPointer[] PointerEnemyContext { get; set; }
         private MultilevelPointer PointerPlayerHealth { get; set; }
         private MultilevelPointer PointerEnemyCount { get; set; }
         private MultilevelPointer[] PointerEnemyHealth { get; set; }
         private MultilevelPointer PointerGameStatsManagerOngoingStatsChapterLapTime { get; set; }
         private MultilevelPointer PointerGameStatsManagerOngoingStatsKillCount { get; set; }
         private MultilevelPointer PointerGameRankManager { get; set; }
-        private MultilevelPointer PointerGameClockSystemSaveData { get; set; }
-        private MultilevelPointer PointerGameClockGameSaveData { get; set; }
+        private MultilevelPointer PointerGameClock { get; set; }
+        // private MultilevelPointer PointerGameClockGameSaveData { get; set; }
 
         internal GameMemoryRE4RScanner(Process process = null)
         {
@@ -47,18 +49,22 @@ namespace SRTPluginProviderRE4R
                 return; // Unknown version.
 
             int pid = GetProcessId(process).Value;
-            memoryAccess = new ProcessMemoryHandler(pid);
+            memoryAccess = new ProcessMemoryHandler((uint)pid);
             if (ProcessRunning)
             {
-                BaseAddress = NativeWrappers.GetProcessBaseAddress(pid, PInvoke.ListModules.LIST_MODULES_64BIT); // Bypass .NET's managed solution for getting this and attempt to get this info ourselves via PInvoke since some users are getting 299 PARTIAL COPY when they seemingly shouldn't.
+                BaseAddress = process?.MainModule?.BaseAddress ?? IntPtr.Zero; // Bypass .NET's managed solution for getting this and attempt to get this info ourselves via PInvoke since some users are getting 299 PARTIAL COPY when they seemingly shouldn't.
+
+                gameMemoryValues._timer = new GameTimer();
+                gameMemoryValues._playerContext = new PlayerContext();
 
                 // Setup the pointers.
                 GenerateEntityHealthPointers();
-                PointerGameStatsManagerOngoingStatsChapterLapTime = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x10);
-                PointerGameStatsManagerOngoingStatsKillCount = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x18);
-                PointerGameRankManager = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameRankManager));
-                PointerGameClockSystemSaveData = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x18);
-                PointerGameClockGameSaveData = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x20);
+                PointerCharacterContext = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0x90, 0x40);
+                PointerGameStatsManagerOngoingStatsChapterLapTime = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x10);
+                PointerGameStatsManagerOngoingStatsKillCount = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x18);
+                PointerGameRankManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameRankManager));
+                PointerGameClock = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameClock));
+                // PointerGameClockGameSaveData = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x20);
             }
         }
 
@@ -66,44 +72,57 @@ namespace SRTPluginProviderRE4R
         {
             switch (version)
             {
+                case GameVersion.RE4R_WW_11025382:
+                    {
+                        pointerAddressCharacterManager = 0x0D261E60;
+                        pointerAddressGameStatsManager = 0x0D2603F0;
+                        pointerAddressGameRankManager = 0x0D292A68;
+                        pointerAddressGameClock = 0x0D262890;
+                        Console.WriteLine("Version: RE4R_WW_11025382");
+                        return true;
+                    }
                 case GameVersion.RE4R_WW_20230407_1:
                     {
-                        pointerAddressEntity = 0x0D22B0A0;
+                        pointerAddressCharacterManager = 0x0D22B0A0;
                         pointerAddressGameStatsManager = 0x0D217780;
                         pointerAddressGameRankManager = 0x0D22B1A0;
                         pointerAddressGameClock = 0x0D22D7D0;
+                        Console.WriteLine("Version: RE4R_WW_20230407_1");
                         return true;
                     }
 
                 case GameVersion.RE4R_WW_20230323_1:
                     {
+                        Console.WriteLine("Version: RE4R_WW_20230323_1 - No longer supported due to structure changes.");
                         return false; // No longer supported due to structure changes.
                     }
             }
 
             // If we made it this far... rest in pepperonis. We have failed to detect any of the correct versions we support and have no idea what pointer addresses to use. Bail out.
+            Console.WriteLine("Version: Unknown");
             return false;
         }
 
         internal void UpdatePointers()
         {
             GenerateEntityHealthPointers();
+            PointerCharacterContext.UpdatePointers();
             PointerGameStatsManagerOngoingStatsChapterLapTime.UpdatePointers();
             PointerGameStatsManagerOngoingStatsKillCount.UpdatePointers();
             PointerGameRankManager.UpdatePointers();
-            PointerGameClockSystemSaveData.UpdatePointers();
-            PointerGameClockGameSaveData.UpdatePointers();
+            // PointerGameClockSystemSaveData.UpdatePointers();
+            // PointerGameClockGameSaveData.UpdatePointers();
         }
 
         private unsafe void GenerateEntityHealthPointers()
         {
             if (PointerPlayerHealth is null)
-                PointerPlayerHealth = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressEntity), 0x90, 0x40, 0x148);
+                PointerPlayerHealth = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0x90, 0x40, 0x148);
             else
                 PointerPlayerHealth.UpdatePointers();
 
             if (PointerEnemyCount is null)
-                PointerEnemyCount = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressEntity), 0xA8);
+                PointerEnemyCount = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8);
             else
                 PointerEnemyCount.UpdatePointers();
 
@@ -112,20 +131,65 @@ namespace SRTPluginProviderRE4R
                 gameMemoryValues.enemyHealth is null || gameMemoryValues.enemyHealth.Length != gameMemoryValues.enemyArraySize)
             {
                 PointerEnemyHealth = new MultilevelPointer[gameMemoryValues.enemyArraySize];
+                PointerEnemyContext = new MultilevelPointer[gameMemoryValues.enemyArraySize];
                 gameMemoryValues.enemyHealth = new HitPoint[gameMemoryValues.enemyArraySize];
+                gameMemoryValues._enemies = new PlayerContext[gameMemoryValues.enemyArraySize];
             }
+
+            if (gameMemoryValues._enemies[0] == null)
+                for (int i = 0; i < gameMemoryValues._enemies.Length; ++i)
+                    gameMemoryValues._enemies[i] = new PlayerContext();
 
             for (int i = 0; i < PointerEnemyHealth.Length; ++i)
             {
                 if (PointerEnemyHealth[i] is null)
-                    PointerEnemyHealth[i] = new MultilevelPointer(memoryAccess, IntPtr.Add(BaseAddress, pointerAddressEntity), 0xA8, 0x40 + (i * sizeof(nuint)), 0x148);
+                    PointerEnemyHealth[i] = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8, 0x40 + (i * sizeof(nuint)), 0x148);
                 else
                     PointerEnemyHealth[i].UpdatePointers();
             }
+
+            for (int i = 0; i < PointerEnemyContext.Length; ++i)
+            {
+                if (PointerEnemyContext[i] is null)
+                    PointerEnemyContext[i] = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8, 0x40 + (i * sizeof(nuint)));
+                else
+                    PointerEnemyContext[i].UpdatePointers();
+            }
+        }
+
+        private unsafe void UpdateGameClock()
+        {
+            // GameClock
+            var gc = PointerGameClock.Deref<GameClock>(0x0);
+            var gsd = memoryAccess.GetAt<GameClockGameSaveData>((nuint*)gc.GameSaveData);
+            gameMemoryValues._timer.SetValues(gc, gsd);
+        }
+
+        private unsafe void UpdatePlayerContext()
+        {
+            // PlayerContext
+            var cc = PointerCharacterContext.Deref<CharacterContext>(0x0);
+            var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
+            gameMemoryValues._playerContext.SetValues(cc, hp);
+        }
+
+        private unsafe void UpdateEnemyContext()
+        {
+            // EnemyContext
+            for (int i = 0; i < gameMemoryValues.enemyArraySize; ++i)
+            {
+                var cc = PointerEnemyContext[i].Deref<CharacterContext>(0x0);
+                var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
+                gameMemoryValues._enemies[i].SetValues(cc, hp);
+            }
+
         }
 
         internal unsafe IGameMemoryRE4R Refresh()
         {
+            UpdateGameClock();
+            UpdatePlayerContext();
+            UpdateEnemyContext();
             gameMemoryValues.playerHealth = PointerPlayerHealth.Deref<HitPoint>(0);
             for (int i = 0; i < gameMemoryValues.enemyArraySize; ++i)
                 gameMemoryValues.enemyHealth[i] = PointerEnemyHealth[i].Deref<HitPoint>(0);
@@ -133,8 +197,8 @@ namespace SRTPluginProviderRE4R
             gameMemoryValues.rank = PointerGameRankManager.Deref<GameRankSystem>(0);
             gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStatsChapterLapTime.Deref<GameStatsChapterLapTimeElement>(0);
             gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount.Deref<GameStatsKillCountElement>(0);
-            gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
-            gameMemoryValues.gameSaveData = PointerGameClockGameSaveData.Deref<GameSaveData>(0);
+            // gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
+            // gameMemoryValues.gameSaveData = PointerGameClockGameSaveData.Deref<GameSaveData>(0);
 
             HasScanned = true;
             return gameMemoryValues;

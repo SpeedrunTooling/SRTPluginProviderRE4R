@@ -14,6 +14,14 @@ namespace SRTPluginProviderRE4R
 
         public string VersionInfo => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
+        public GameTimer Timer { get => _timer; set => _timer = value; }
+        internal GameTimer _timer;
+
+        public PlayerContext PlayerContext { get => _playerContext; }
+        internal PlayerContext _playerContext;
+        public PlayerContext[] Enemies { get => _enemies; }
+        internal PlayerContext[] _enemies;
+
         public HitPoint PlayerHealth { get => playerHealth; }
         internal HitPoint playerHealth;
 
@@ -31,33 +39,5 @@ namespace SRTPluginProviderRE4R
 
         public GameStatsKillCountElement GameStatsKillCountElement { get => gameStatsKillCountElement; }
         internal GameStatsKillCountElement gameStatsKillCountElement;
-
-        public SystemSaveData SystemSaveData { get => systemSaveData; }
-        internal SystemSaveData systemSaveData;
-
-        public GameSaveData GameSaveData { get => gameSaveData; }
-        internal GameSaveData gameSaveData;
-
-        // Public Properties - Calculated
-        public long IGTCalculated => 0L;//unchecked((long)(GameStatsChapterLapTimeElement.Time < 0UL ? 0UL : (GameStatsChapterLapTimeElement.Time - GameSaveData.GameElapsedTime - GameSaveData.DemoSpendingTime - GameSaveData.PauseSpendingTime)));
-
-        public long IGTCalculatedTicks => unchecked(IGTCalculated * 10L);
-
-        public TimeSpan IGTTimeSpan
-        {
-            get
-            {
-                TimeSpan timespanIGT;
-
-                if (IGTCalculatedTicks <= TimeSpan.MaxValue.Ticks)
-                    timespanIGT = new TimeSpan(IGTCalculatedTicks);
-                else
-                    timespanIGT = new TimeSpan();
-
-                return timespanIGT;
-            }
-        }
-
-        public string IGTFormattedString => IGTTimeSpan.ToString(IGT_TIMESPAN_STRING_FORMAT, CultureInfo.InvariantCulture);
     }
 }

@@ -9,6 +9,11 @@ namespace SRTPluginProviderRE4R
 
         string VersionInfo { get; }
 
+        GameTimer Timer { get; }
+
+        PlayerContext PlayerContext { get; }
+        PlayerContext[] Enemies { get; }
+
         HitPoint PlayerHealth { get; }
 
         int EnemyArraySize { get; }
@@ -20,17 +25,5 @@ namespace SRTPluginProviderRE4R
         GameStatsChapterLapTimeElement GameStatsChapterLapTimeElement { get; }
 
         GameStatsKillCountElement GameStatsKillCountElement { get; }
-
-        SystemSaveData SystemSaveData { get; }
-
-        GameSaveData GameSaveData { get; }
-
-        long IGTCalculated { get; }
-
-        long IGTCalculatedTicks { get; }
-
-        TimeSpan IGTTimeSpan { get; }
-
-        string IGTFormattedString { get; }
     }
 }
