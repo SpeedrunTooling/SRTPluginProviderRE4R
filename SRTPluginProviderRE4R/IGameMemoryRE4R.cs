@@ -12,13 +12,24 @@ namespace SRTPluginProviderRE4R
         GameTimer Timer { get; }
 
         PlayerContext PlayerContext { get; }
+
+        int InventoryCount { get; }
+
+        CaseSize CaseSize { get; }
+
+        InventoryEntry[] Items { get; }
+
+        int InventoryCountAshley { get; }
+
+        CaseSize CaseSizeAshley { get; }
+
+        InventoryEntry[] ItemsAshley { get; }
+
         PlayerContext[] Enemies { get; }
 
         HitPoint PlayerHealth { get; }
 
         int EnemyArraySize { get; }
-
-        HitPoint[] EnemyHealth { get; }
 
         GameRankSystem Rank { get; }
 

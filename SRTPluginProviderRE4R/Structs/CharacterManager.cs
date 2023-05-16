@@ -232,7 +232,7 @@ namespace SRTPluginProviderRE4R.Structs
         ch8_g9z0 = 81103,
         Pig = 81104,
         Cow = 81105,
-        ch8_g0z0 = 81106,
+        Dog = 81106,
         Black_Bass = 81107,
         ch8_g4z0 = 81108,
         ch7_k0z0 = 81109,

@@ -19,6 +19,25 @@ namespace SRTPluginProviderRE4R
 
         public PlayerContext PlayerContext { get => _playerContext; }
         internal PlayerContext _playerContext;
+
+        public int InventoryCount { get => _inventoryCount; }
+        internal int _inventoryCount;
+
+        public CaseSize CaseSize { get => _caseSize; }
+        internal CaseSize _caseSize;
+
+        public InventoryEntry[] Items { get => _items; set => _items = value; }
+        internal InventoryEntry[] _items;
+
+        public int InventoryCountAshley { get => _inventoryCountAshley; }
+        internal int _inventoryCountAshley;
+
+        public CaseSize CaseSizeAshley { get => _caseSizeAshley; }
+        internal CaseSize _caseSizeAshley;
+
+        public InventoryEntry[] ItemsAshley { get => _itemsAshley; set => _itemsAshley = value; }
+        internal InventoryEntry[] _itemsAshley;
+
         public PlayerContext[] Enemies { get => _enemies; }
         internal PlayerContext[] _enemies;
 
@@ -27,9 +46,6 @@ namespace SRTPluginProviderRE4R
 
         public int EnemyArraySize { get => enemyArraySize; }
         internal int enemyArraySize;
-
-        public HitPoint[] EnemyHealth { get => enemyHealth; }
-        internal HitPoint[] enemyHealth;
 
         public GameRankSystem Rank { get => rank; }
         internal GameRankSystem rank;
