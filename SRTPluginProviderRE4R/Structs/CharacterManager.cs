@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -27,7 +27,10 @@ namespace SRTPluginProviderRE4R.Structs
                 PlayerState.Danger;
         }
         public string CurrentHealthState => HealthState.ToString();
-        public bool IsLoaded => KindID != CharacterKindID.None;
+        public bool IsLoaded => KindID != CharacterKindID.None && Health.MaxHP != 0;
+        public bool IsIgnored => CharacterUtils.IgnoreList.Contains(KindID);
+        public bool IsAnimal => CharacterUtils.AnimalList.Contains(KindID);
+        public bool IsBoss => CharacterUtils.BossList.Contains(KindID);
 
         public PlayerContext()
         {
@@ -43,6 +46,34 @@ namespace SRTPluginProviderRE4R.Structs
             Rotation.Update(cc.RW, cc.RX, cc.RY, cc.RZ);
             Health = hp;
         }
+    }
+
+    public class CharacterUtils
+    {
+        public static List<CharacterKindID> IgnoreList = new List<CharacterKindID>() {
+            CharacterKindID.Sadler3,
+        };
+
+        public static List<CharacterKindID> AnimalList = new List<CharacterKindID>() {
+            CharacterKindID.Cow,
+            CharacterKindID.Dog,
+            CharacterKindID.Pig,
+            CharacterKindID.Black_Bass,
+        };
+
+        public static List<CharacterKindID> BossList = new List<CharacterKindID>()
+        {
+            CharacterKindID.El_Gigante,
+            CharacterKindID.DelLago,
+            CharacterKindID.Krauser,
+            CharacterKindID.Krauser2,
+            CharacterKindID.Salazar,
+            CharacterKindID.Sadler,
+            CharacterKindID.Méndez,
+            CharacterKindID.Méndez_Mutate,
+            CharacterKindID.Méndez_Mutate_2,
+            CharacterKindID.Sadler2,
+        };
     }
 
     public class Vec3
@@ -163,89 +194,4 @@ namespace SRTPluginProviderRE4R.Structs
         }
     }
 
-    public enum CharacterKindID : int
-    {
-        None = 0,
-        Leon = 100000,
-        ch0_a1z0 = 110000,
-        ch0_zzzz = 199999,
-        Village_Ganado = 200000,
-        Cult_Ganado = 200001,
-        Island_Ganado = 200002,
-        Salvador = 200003,
-        Colmillos = 200004,
-        Novistador = 200005,
-        El_Gigante = 200006,
-        DelLago = 200007,
-        Garrador = 200008,
-        Las_Plagas = 200009,
-        JJ = 200010,
-        Krauser = 200011,
-        Regenerador = 200012,
-        Krauser2 = 200013,
-        ch1_d5z0 = 200014,
-        Verdugo = 200015,
-        Soldier_Ganado = 200016,
-        Salazar = 200017,
-        Sadler = 200018,
-        Méndez = 200019,
-        Méndez2 = 200020,
-        Méndez3 = 200021,
-        ch4_d7z0 = 200022,
-        ch4_f9z0 = 200023,
-        ch4_faz0 = 200024,
-        ch4_faz1 = 200025,
-        Sadler2 = 200026,
-        Sadler3 = 200027,
-        ch4_fez0 = 200028,
-        ch4_fbz0 = 200029,
-        Ashley = 200030,
-        ch2_a200 = 200031,
-        ch2_a3z0 = 200032,
-        ch2_a3z1 = 200033,
-        ch2_a600 = 200034,
-        ch2_a7z0 = 200035,
-        ch2_b0z0 = 200036,
-        ch2_b1z0 = 200037,
-        ch2_b200 = 200038,
-        ch2_b300 = 200039,
-        ch2_b400 = 200040,
-        ch2_b600 = 200041,
-        ch2_b8z0 = 200042,
-        ch2_b900 = 200043,
-        ch2_ba00 = 200044,
-        ch2_bbz0 = 200045,
-        ch2_bc00 = 200046,
-        ch2_bd00 = 200047,
-        ch3_a8z0 = 380000,
-        ch6_i0z0 = 600000,
-        ch6_i1z0 = 600001,
-        ch6_i2z0 = 600002,
-        ch6_i3z0 = 600003,
-        ch6_i4z0 = 600004,
-        ch6_i5z0 = 600005,
-        ch8_0000 = 80000,
-        ch8_1000 = 81000,
-        ch8_1100 = 81100,
-        ch8_g1z0 = 81101,
-        ch8_g5z0 = 81102,
-        ch8_g9z0 = 81103,
-        Pig = 81104,
-        Cow = 81105,
-        Dog = 81106,
-        Black_Bass = 81107,
-        ch8_g4z0 = 81108,
-        ch7_k0z0 = 81109,
-        ch5_j1z0 = 500000,
-        Invalid = -1,
-    }
-
-    public enum PlayerState : int
-    {
-        Dead,
-        Fine,
-        Caution,
-        Danger,
-        Poisoned
-    }
 }

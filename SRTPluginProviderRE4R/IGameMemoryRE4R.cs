@@ -9,9 +9,17 @@ namespace SRTPluginProviderRE4R
 
         string VersionInfo { get; }
 
+        bool IsInGameShopOpen { get; }
+
+        string CurrentChapter { get; }
+
         GameTimer Timer { get; }
 
         PlayerContext PlayerContext { get; }
+
+        PlayerContext[] PartnerContext { get; }
+
+        int LastItem { get; }
 
         int InventoryCount { get; }
 
@@ -19,15 +27,23 @@ namespace SRTPluginProviderRE4R
 
         InventoryEntry[] Items { get; }
 
-        int InventoryCountAshley { get; }
+        int PTAS { get; }
 
-        CaseSize CaseSizeAshley { get; }
+        int Spinel { get; }
 
-        InventoryEntry[] ItemsAshley { get; }
+        int KeyItemCount { get; }
+
+        InventoryEntry[] KeyItems { get; }
+
+        int TreasureItemsCount { get; }
+
+        InventoryEntry[] TreasureItems { get; }
+
+        int UniqueCount { get; }
+
+        InventoryEntry[] UniqueItems { get; }
 
         PlayerContext[] Enemies { get; }
-
-        HitPoint PlayerHealth { get; }
 
         int EnemyArraySize { get; }
 
