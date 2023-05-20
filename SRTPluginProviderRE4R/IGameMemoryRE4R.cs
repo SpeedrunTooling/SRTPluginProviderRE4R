@@ -9,28 +9,48 @@ namespace SRTPluginProviderRE4R
 
         string VersionInfo { get; }
 
-        HitPoint PlayerHealth { get; }
+        bool IsInGameShopOpen { get; }
+
+        string CurrentChapter { get; }
+
+        GameTimer Timer { get; }
+
+        PlayerContext PlayerContext { get; }
+
+        PlayerContext[] PartnerContext { get; }
+
+        int LastItem { get; }
+
+        int InventoryCount { get; }
+
+        CaseSize CaseSize { get; }
+
+        InventoryEntry[] Items { get; }
+
+        int PTAS { get; }
+
+        int Spinel { get; }
+
+        int KeyItemCount { get; }
+
+        InventoryEntry[] KeyItems { get; }
+
+        int TreasureItemsCount { get; }
+
+        InventoryEntry[] TreasureItems { get; }
+
+        int UniqueCount { get; }
+
+        InventoryEntry[] UniqueItems { get; }
+
+        PlayerContext[] Enemies { get; }
 
         int EnemyArraySize { get; }
-
-        HitPoint[] EnemyHealth { get; }
 
         GameRankSystem Rank { get; }
 
         GameStatsChapterLapTimeElement GameStatsChapterLapTimeElement { get; }
 
         GameStatsKillCountElement GameStatsKillCountElement { get; }
-
-        SystemSaveData SystemSaveData { get; }
-
-        GameSaveData GameSaveData { get; }
-
-        long IGTCalculated { get; }
-
-        long IGTCalculatedTicks { get; }
-
-        TimeSpan IGTTimeSpan { get; }
-
-        string IGTFormattedString { get; }
     }
 }
