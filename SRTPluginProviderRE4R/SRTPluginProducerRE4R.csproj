@@ -24,18 +24,6 @@
 		<PackageReference Include="ProcessMemory64" Version="4.0.*-*" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Update="Pages\Shared\Config.cshtml">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="Views\Shared\_Layout.cshtml">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="wwwroot\css\site.css">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
-
 	<Target Name="CopyOutputToDestination" AfterTargets="AfterBuild">
 		<ItemGroup>
 			<OutputFiles Include="$(OutDir)**\*"></OutputFiles>
