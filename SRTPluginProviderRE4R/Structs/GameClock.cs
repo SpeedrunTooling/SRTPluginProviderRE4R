@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-namespace SRTPluginProviderRE4R.Structs
+namespace SRTPluginProducerRE4R.Structs
 {
     public class GameTimer
     {

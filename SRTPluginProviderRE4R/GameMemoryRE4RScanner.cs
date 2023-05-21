@@ -1,9 +1,9 @@
 ﻿using ProcessMemory;
-using SRTPluginProviderRE4R.Structs;
+using SRTPluginProducerRE4R.Structs;
 using System;
 using System.Diagnostics;
 
-namespace SRTPluginProviderRE4R
+namespace SRTPluginProducerRE4R
 {
     internal class GameMemoryRE4RScanner : IDisposable
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace SRTPluginProviderRE4R.Structs
+namespace SRTPluginProducerRE4R.Structs
 {
     [DebuggerDisplay("{_DebuggerDisplay,nq}")]
     public struct InventoryEntry

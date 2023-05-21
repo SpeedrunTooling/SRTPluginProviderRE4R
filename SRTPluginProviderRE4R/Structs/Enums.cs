@@ -1,4 +1,4 @@
-﻿namespace SRTPluginProviderRE4R.Structs
+﻿namespace SRTPluginProducerRE4R.Structs
 {
     public enum ChapterID
     {

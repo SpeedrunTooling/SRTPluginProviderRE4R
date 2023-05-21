@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SRTPluginProviderRE4R.Structs
+namespace SRTPluginProducerRE4R.Structs
 {
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x20)]
 

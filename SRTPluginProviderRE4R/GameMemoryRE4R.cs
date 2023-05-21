@@ -1,10 +1,10 @@
-﻿using SRTPluginProviderRE4R.Structs;
+﻿using SRTPluginProducerRE4R.Structs;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 
-namespace SRTPluginProviderRE4R
+namespace SRTPluginProducerRE4R
 {
     public struct GameMemoryRE4R : IGameMemoryRE4R
     {

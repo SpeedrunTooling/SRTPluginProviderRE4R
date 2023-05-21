@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SRTPluginProviderRE4R
+namespace SRTPluginProducerRE4R
 {
     /// <summary>
     /// SHA256 hashes for the RE4 REmake game executables.

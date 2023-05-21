@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace SRTPluginProviderRE4R.Structs
+namespace SRTPluginProducerRE4R.Structs
 {
     public class PlayerContext
     {

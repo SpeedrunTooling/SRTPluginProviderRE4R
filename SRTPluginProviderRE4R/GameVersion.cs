@@ -1,4 +1,4 @@
-﻿namespace SRTPluginProviderRE4R
+﻿namespace SRTPluginProducerRE4R
 {
     public enum GameVersion : int
     {

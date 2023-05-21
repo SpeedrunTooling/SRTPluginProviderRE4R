@@ -1,0 +1,120 @@
+@model SRTPluginProducerRE4R.Pages.Shared.PluginConfigurationModel
+@{
+    ViewData["Title"] = "My Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="pl-4 pt-4 text-2xl font-bold text-indigo-400">Resident Evil 4 Remake DirectX Overlay Settings</h1>
+
+<form class="flex flex-col gap-2 p-4" method="post" asp-page-handler="SaveConfiguration">
+	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md justify-center">
+		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Debug Settings</h1>
+		<div class="w-full grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+			<label>
+				<input type="checkbox" asp-for="Debug" /> Show Debug Timer Info
+			</label>
+
+			<label>
+				<input type="checkbox" asp-for="ShowDuffle" /> Show Duffle
+			</label>
+
+			<label>
+				<input type="checkbox" asp-for="ShowDifficultyAdjustment" /> Show DA (Difficulty Adjustment)
+			</label>
+
+			<label>
+				<input type="checkbox" asp-for="ShowPTAS" /> Show PTAS
+			</label>
+
+			<label>
+				<input type="checkbox" asp-for="ShowPosition" /> Show Position
+			</label>
+
+			<label>
+				<input type="checkbox" asp-for="ShowRotation" /> Show Rotation
+			</label>
+		</div>
+	</div>
+
+	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
+		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Font Settings</h1>
+
+		<label class="flex flex-col">
+			Font Name
+			<select class="text-black" id="fonts" name="fonts" asp-for="StringFontName">
+				<option value="Arial">Arial Black</option>
+				<option value="Bahnschrift">Bahnschrift</option>
+				<option value="Comic Sans MS">Comic Sans MS</option>
+				<option value="Courier New">Consolas</option>
+				<option value="Courier New">Courier New</option>
+				<option value="Impact">Impact</option>
+				<option value="Times New Roman">Times New Roman</option>
+			</select>
+		</label>
+
+		<label class="flex flex-col">
+			Font Size
+			<input type="number" asp-for="FontSize" />
+		</label>
+	</div>
+
+	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
+		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Scale and Position Offset Settings</h1>
+
+		<label class="flex flex-col">
+			UI Size Scale Multiplier
+			<input type="number" asp-for="ScalingFactor" />
+		</label>
+
+		<label class="flex flex-col">
+			Position X (All)
+			<input type="number" asp-for="PositionX" />
+		</label>
+
+		<label class="flex flex-col">
+			Position Y (All)
+			<input type="number" asp-for="PositionY" />
+		</label>
+
+		<label class="flex flex-col">
+			Enemy HP Position X (-1 is Disabled)
+			<input type="number" asp-for="EnemyHPPositionX" />
+		</label>
+
+		<label class="flex flex-col">
+			Enemy HP Position Y (-1 is Disabled)
+			<input type="number" asp-for="EnemyHPPositionY" />
+		</label>
+
+		<label class="flex flex-col">
+			Enemy Render Limit (-1 is Disabled)
+			<input type="number" asp-for="EnemyLimit" />
+		</label>
+	</div>
+
+	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
+		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">HP Bar Settings</h1>
+
+		<label>
+			<input type="checkbox" asp-for="ShowHPBars" /> Show HP Bars
+		</label>
+
+		<label>
+			<input type="checkbox" asp-for="ShowDamagedEnemiesOnly" /> Show Damaged Enemies Only
+		</label>
+
+		<label>
+			<input type="checkbox" asp-for="ShowBossOnly" /> Show Boss Only
+		</label>
+
+		<label>
+			<input type="checkbox" asp-for="CenterPlayerHP" /> Center Player HP
+		</label>
+
+		<label>
+			<input type="checkbox" asp-for="CenterBossHP" /> Center Boss HP
+		</label>
+	</div>
+
+	<button class="bg-green-800 hover:bg-green-700 p-4 rounded-md" type="submit">Save Configuration</button>
+</form>

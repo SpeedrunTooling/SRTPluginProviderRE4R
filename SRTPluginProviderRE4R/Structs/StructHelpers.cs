@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SRTPluginProviderRE4R.Structs
+namespace SRTPluginProducerRE4R.Structs
 {
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x38)]
     public struct DictionaryStruct

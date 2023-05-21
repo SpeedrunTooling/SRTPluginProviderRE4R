@@ -1,7 +1,7 @@
-﻿using SRTPluginProviderRE4R.Structs;
+﻿using SRTPluginProducerRE4R.Structs;
 using System;
 
-namespace SRTPluginProviderRE4R
+namespace SRTPluginProducerRE4R
 {
     public interface IGameMemoryRE4R
     {
