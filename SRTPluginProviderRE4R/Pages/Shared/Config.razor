@@ -8,8 +8,126 @@
 	}
 }
 
-@Model.FontSize
 
-<input class="text-black p-2 rounded-md" @bind="Model.FontSize" />
+<div class="w-full sm:h-auto h-full bg-zinc-800 rounded-md py-4 text-sm">
+	<h1 class="text-2xl font-bold text-red-500 text-center pb-2">Resident Evil 4 Remake Settings</h1>
+	<div class="w-full flex flex-col gap-2 px-4">
+		<div class="w-full h-auto flex flex-col gap-2 rounded-md justify-center rounded-md bg-zinc-700">
+			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Debug Settings</h1>
+			<div class="w-full grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 px-4 pb-4 gap-2">
+				<label>
+					<input type="checkbox" @bind="Model.Debug" /> Show Debug Timer Info
+				</label>
 
-<button class="btn btn-primary" @onclick="SaveConfig">Save</button>
+				<label>
+					<input type="checkbox" @bind="Model.ShowDuffle" /> Show Duffle
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowDifficultyAdjustment" /> Show DA
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowPTAS" /> Show PTAS
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowPosition" /> Show Position
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowRotation" /> Show Rotation
+				</label>
+			</div>
+		</div>
+
+		<div class="w-full h-auto flex flex-col gap-2 rounded-md bg-zinc-700">
+			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Font Settings</h1>
+			<div class="w-full grid grid-cols-4 gap-2 px-4 pb-4">
+				<label class="col-span-1 flex flex-col">
+					Font Size
+					<input class="text-black p-2 rounded-md" type="number" @bind="Model.FontSize" />
+				</label>
+
+				<label class="col-span-3 flex flex-col">
+					Font Name
+					@{
+						<select class="h-full text-black p-2 rounded-md" @bind="Model.StringFontName">
+							<option value="Arial" selected="@(Model.StringFontName == "Arial Black")">Arial Black</option>
+							<option value="Bahnschrift" selected="@(Model.StringFontName == "Bahnschrift")">Bahnschrift</option>
+							<option value="Comic Sans MS" selected="@(Model.StringFontName == "Comic Sans MS")">Comic Sans MS</option>
+							<option value="Courier New" selected="@(Model.StringFontName == "Consolas")">Consolas</option>
+							<option value="Courier New" selected="@(Model.StringFontName == "Courier New")">Courier New</option>
+							<option value="Impact" selected="@(Model.StringFontName == "Impact")">Impact</option>
+							<option value="Times New Roman" selected="@(Model.StringFontName == "Times New Roman")">Times New Roman</option>
+						</select>
+					}
+				</label>
+			</div>
+			
+		</div>
+
+		<div class="w-full h-auto gap-2 rounded-md bg-zinc-700">
+			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Scale and Position Offset Settings</h1>
+			<div class="w-full grid grid-cols-2 gap-2 px-4 pb-4">
+				<label class="flex flex-col">
+					UI Size Scale Multiplier
+					<input class="text-black p-2 rounded-md" type="number" min="0.01" max="4.00" step="0.01" @bind="Model.ScalingFactor" />
+				</label>
+
+				<label class="flex flex-col">
+					Enemy Render Limit
+					<input class="text-black p-2 rounded-md" type="number" min="-1" max="32" step="1" @bind="Model.EnemyLimit" />
+				</label>
+
+				<label class="flex flex-col">
+					Position X (All)
+					<input class="text-black p-2 rounded-md" type="number" min="0" max="3840" step="1" @bind="Model.PositionX" />
+				</label>
+
+				<label class="flex flex-col">
+					Position Y (All)
+					<input class="text-black p-2 rounded-md" type="number" min="0" max="2160" step="1" @bind="Model.PositionY" />
+				</label>
+
+				<label class="flex flex-col">
+					Enemy HP Position X
+					<input class="text-black p-2 rounded-md" type="number" min="-1" max="3840" step="1" @bind="Model.EnemyHPPositionX" />
+				</label>
+
+				<label class="flex flex-col">
+					Enemy HP Position Y
+					<input class="text-black p-2 rounded-md" type="number" min="-1" max="2160" step="1" @bind="Model.EnemyHPPositionY" />
+				</label>
+			</div>
+		</div>
+
+		<div class="w-full h-auto flex flex-col gap-2 rounded-md bg-zinc-700">
+			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">HP Bar Settings</h1>
+			<div class="col-span-3 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 px-4 pb-4 gap-2">
+				<label>
+					<input type="checkbox" @bind="Model.ShowHPBars" /> Show HP Bars
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowDamagedEnemiesOnly" /> Show Damaged Only
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.ShowBossOnly" /> Show Boss Only
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.CenterPlayerHP" /> Center Player HP
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Model.CenterBossHP" /> Center Boss HP
+				</label>
+			</div>
+		</div>
+
+		<button class="w-full bg-green-800 hover:bg-green-700 p-4 rounded-md" @onclick="SaveConfig">Save Configuration</button>
+	</div>
+</div>
+
