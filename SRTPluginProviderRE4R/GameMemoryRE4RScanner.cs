@@ -9,7 +9,7 @@ namespace SRTPluginProducerRE4R
     {
         // Variables
         private ProcessMemoryHandler memoryAccess;
-        private GameMemoryRE4R gameMemoryValues;
+		private GameMemoryRE4R gameMemoryValues;
         private GameVersion gv = GameVersion.Unknown;
         public bool HasScanned;
         private readonly int MAX_PARTNERS = 2;
@@ -65,7 +65,7 @@ namespace SRTPluginProducerRE4R
             if (gv == GameVersion.Unknown)
                 return; // Unknown version.
 
-            int pid = GetProcessId(process).Value;
+			int pid = GetProcessId(process).Value;
             memoryAccess = new ProcessMemoryHandler((uint)pid);
             if (ProcessRunning)
             {
@@ -337,8 +337,7 @@ namespace SRTPluginProducerRE4R
             gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount.Deref<GameStatsKillCountElement>(0);
             // gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
             // gameMemoryValues.gameSaveData = PointerGameClockGameSaveData.Deref<GameSaveData>(0);
-
-            HasScanned = true;
+			HasScanned = true;
             return gameMemoryValues;
         }
 
