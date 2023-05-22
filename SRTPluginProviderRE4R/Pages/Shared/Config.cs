@@ -51,7 +51,7 @@ namespace SRTPluginProducerRE4R.Pages.Shared
             //originalConfiguration.StringFontName = updatedConfiguration.StringFontName;
 
             // Redirect to a success page or display a success message
-            return RedirectToPage("SuccessPage");
+            return RedirectToPage("/_Host");
         }
 
         private PluginConfiguration GetOriginalConfiguration()

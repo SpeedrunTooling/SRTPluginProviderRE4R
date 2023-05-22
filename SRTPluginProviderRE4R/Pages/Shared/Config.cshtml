@@ -1,120 +1,143 @@
 @model SRTPluginProducerRE4R.Pages.Shared.PluginConfigurationModel
 @{
-    ViewData["Title"] = "My Form";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "DXOverlay Settings";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1 class="pl-4 pt-4 text-2xl font-bold text-indigo-400">Resident Evil 4 Remake DirectX Overlay Settings</h1>
 
-<form class="flex flex-col gap-2 p-4" method="post" asp-page-handler="SaveConfiguration">
+<form id="configurationForm" class="w-full flex flex-col gap-2 p-4" method="post" asp-page-handler="SaveConfiguration">
 	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md justify-center">
 		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Debug Settings</h1>
 		<div class="w-full grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
 			<label>
-				<input type="checkbox" asp-for="Debug" /> Show Debug Timer Info
+				<input type="checkbox" name="Debug" asp-for="Debug" value="true" @(Model.Configuration.Debug ? "checked" : null) /> Show Debug Timer Info
 			</label>
 
 			<label>
-				<input type="checkbox" asp-for="ShowDuffle" /> Show Duffle
+				<input type="checkbox" name="ShowDuffle" asp-for="ShowDuffle" value="true" @(Model.Configuration.ShowDuffle ? "checked" : null) /> Show Duffle
 			</label>
 
 			<label>
-				<input type="checkbox" asp-for="ShowDifficultyAdjustment" /> Show DA (Difficulty Adjustment)
+				<input type="checkbox" name="ShowDifficultyAdjustment" asp-for="ShowDifficultyAdjustment" value="true" @(Model.Configuration.ShowDifficultyAdjustment ? "checked" : null) /> Show DA (Difficulty Adjustment)
 			</label>
 
 			<label>
-				<input type="checkbox" asp-for="ShowPTAS" /> Show PTAS
+				<input type="checkbox" name="ShowPTAS" asp-for="ShowPTAS" value="true" @(Model.Configuration.ShowPTAS ? "checked" : null) /> Show PTAS
 			</label>
 
 			<label>
-				<input type="checkbox" asp-for="ShowPosition" /> Show Position
+				<input type="checkbox" name="ShowPosition" asp-for="ShowPosition" value="true" @(Model.Configuration.ShowPosition ? "checked" : null) /> Show Position
 			</label>
 
 			<label>
-				<input type="checkbox" asp-for="ShowRotation" /> Show Rotation
+				<input type="checkbox" name="ShowRotation" asp-for="ShowRotation" value="true" @(Model.Configuration.ShowRotation ? "checked" : null) /> Show Rotation
 			</label>
 		</div>
 	</div>
 
-	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
-		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Font Settings</h1>
+	<div class="w-full h-auto bg-slate-800 grid grid-cols-4 gap-2 p-4 rounded-md">
+		<h1 class="col-span-4 text-center text-lg font-bold border-b pb-2 text-indigo-300">Font Settings</h1>
 
-		<label class="flex flex-col">
+		<label class="col-span-1 flex flex-col">
+			Font Size
+			<input class="text-black p-2 rounded-md" type="number" name="FontSize" asp-for="FontSize" value="@Model.Configuration.FontSize" />
+		</label>
+
+		<label class="col-span-3 flex flex-col">
 			Font Name
-			<select class="text-black" id="fonts" name="fonts" asp-for="StringFontName">
-				<option value="Arial">Arial Black</option>
-				<option value="Bahnschrift">Bahnschrift</option>
-				<option value="Comic Sans MS">Comic Sans MS</option>
-				<option value="Courier New">Consolas</option>
-				<option value="Courier New">Courier New</option>
-				<option value="Impact">Impact</option>
-				<option value="Times New Roman">Times New Roman</option>
+			<select class="text-black p-2 rounded-md" name="StringFontName" asp-for="StringFontName">
+				<option value="Arial" selected="@Model.Configuration.StringFontName == " Arial"">Arial Black</option>
+				<option value="Bahnschrift" selected="@Model.Configuration.StringFontName == " Bahnschrift"">Bahnschrift</option>
+				<option value="Comic Sans MS" selected="@Model.Configuration.StringFontName == " Comic Sans MS"">Comic Sans MS</option>
+				<option value="Courier New" selected="@Model.Configuration.StringFontName == " Courier New"">Consolas</option>
+				<option value="Courier New" selected="@Model.Configuration.StringFontName == " Courier New"">Courier New</option>
+				<option value="Impact" selected="@Model.Configuration.StringFontName == " Impact"">Impact</option>
+				<option value="Times New Roman" selected="@Model.Configuration.StringFontName == " Times New Roman"">Times New Roman</option>
 			</select>
 		</label>
 
-		<label class="flex flex-col">
-			Font Size
-			<input type="number" asp-for="FontSize" />
-		</label>
 	</div>
 
-	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
-		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">Scale and Position Offset Settings</h1>
+	<div class="w-full h-auto bg-slate-800 grid grid-cols-2 gap-2 p-4 rounded-md">
+		<h1 class="col-span-2 text-center text-lg font-bold border-b pb-2 text-indigo-300">Scale and Position Offset Settings</h1>
 
 		<label class="flex flex-col">
 			UI Size Scale Multiplier
-			<input type="number" asp-for="ScalingFactor" />
+			<input class="text-black p-2 rounded-md" type="number" name="ScalingFactor" asp-for="ScalingFactor" value="@Model.Configuration.ScalingFactor" />
+		</label>
+
+		<label class="flex flex-col">
+			Enemy Render Limit
+			<input class="text-black p-2 rounded-md" type="number" name="EnemyLimit" asp-for="EnemyLimit" value="@Model.Configuration.EnemyLimit" />
 		</label>
 
 		<label class="flex flex-col">
 			Position X (All)
-			<input type="number" asp-for="PositionX" />
+			<input class="text-black p-2 rounded-md" type="number" name="PositionX" asp-for="PositionX" value="@Model.Configuration.PositionX" />
 		</label>
 
 		<label class="flex flex-col">
 			Position Y (All)
-			<input type="number" asp-for="PositionY" />
+			<input class="text-black p-2 rounded-md" type="number" name="PositionY" asp-for="PositionY" value="@Model.Configuration.PositionY" />
 		</label>
 
 		<label class="flex flex-col">
-			Enemy HP Position X (-1 is Disabled)
-			<input type="number" asp-for="EnemyHPPositionX" />
+			Enemy HP Position X
+			<input class="text-black p-2 rounded-md" type="number" name="EnemyHPPositionX" asp-for="EnemyHPPositionX" value="@Model.Configuration.EnemyHPPositionX" />
 		</label>
 
 		<label class="flex flex-col">
-			Enemy HP Position Y (-1 is Disabled)
-			<input type="number" asp-for="EnemyHPPositionY" />
+			Enemy HP Position Y
+			<input class="text-black p-2 rounded-md" type="number" name="EnemyHPPositionY" asp-for="EnemyHPPositionY" value="@Model.Configuration.EnemyHPPositionY" />
 		</label>
 
-		<label class="flex flex-col">
-			Enemy Render Limit (-1 is Disabled)
-			<input type="number" asp-for="EnemyLimit" />
+	</div>
+
+	<div class="w-full h-auto bg-slate-800  grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2 p-4 rounded-md">
+		<h1 class="md:col-span-3 sm:col-span-2 col-span-1 text-center text-lg font-bold border-b pb-2 text-indigo-300">HP Bar Settings</h1>
+
+		<label>
+			<input type="checkbox" name="ShowHPBars" asp-for="ShowHPBars" value="true" @(Model.Configuration.ShowHPBars ? "checked" : null) /> Show HP Bars
+		</label>
+
+		<label>
+			<input type="checkbox" name="ShowDamagedEnemiesOnly" asp-for="ShowDamagedEnemiesOnly" value="true" @(Model.Configuration.ShowDamagedEnemiesOnly ? "checked" : null) /> Show Damaged Enemies Only
+		</label>
+
+		<label>
+			<input type="checkbox" name="ShowBossOnly" asp-for="ShowBossOnly" value="true" @(Model.Configuration.ShowBossOnly ? "checked" : null) /> Show Boss Only
+		</label>
+
+		<label>
+			<input type="checkbox" name="CenterPlayerHP" asp-for="CenterPlayerHP" value="true" @(Model.Configuration.CenterPlayerHP ? "checked" : null) /> Center Player HP
+		</label>
+
+		<label>
+			<input type="checkbox" name="CenterBossHP" asp-for="CenterBossHP" value="true" @(Model.Configuration.CenterBossHP ? "checked" : null) /> Center Boss HP
 		</label>
 	</div>
 
-	<div class="w-full h-auto bg-slate-800 flex flex-col gap-2 p-4 rounded-md">
-		<h1 class="w-full text-center text-lg font-bold border-b pb-2 text-indigo-300">HP Bar Settings</h1>
-
-		<label>
-			<input type="checkbox" asp-for="ShowHPBars" /> Show HP Bars
-		</label>
-
-		<label>
-			<input type="checkbox" asp-for="ShowDamagedEnemiesOnly" /> Show Damaged Enemies Only
-		</label>
-
-		<label>
-			<input type="checkbox" asp-for="ShowBossOnly" /> Show Boss Only
-		</label>
-
-		<label>
-			<input type="checkbox" asp-for="CenterPlayerHP" /> Center Player HP
-		</label>
-
-		<label>
-			<input type="checkbox" asp-for="CenterBossHP" /> Center Boss HP
-		</label>
-	</div>
-
-	<button class="bg-green-800 hover:bg-green-700 p-4 rounded-md" type="submit">Save Configuration</button>
+	<button class="w-full bg-green-800 hover:bg-green-700 p-4 rounded-md" type="submit">Save Configuration</button>
 </form>
+
+<script>
+	// Select all checkboxes inside the form
+	const checkboxes = document.querySelectorAll('#configurationForm input[type="checkbox"]');
+
+	// Attach an event listener to each checkbox
+	checkboxes.forEach(checkbox => {
+		checkbox.addEventListener('change', function () {
+			console.log("Hello World");
+			// Get the checkbox's name attribute
+			const name = this.name;
+
+			// Get the checkbox's checked state
+			const checked = this.checked;
+
+			// Find the corresponding input field by name and update its value
+			const inputField = document.querySelector(`#configurationForm [name="${name}"]`);
+			inputField.value = checked;
+		});
+	});
+</script>

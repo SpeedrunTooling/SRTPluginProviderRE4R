@@ -38,7 +38,9 @@ namespace SRTPluginProducerRE4R
         public void Refresh()
         {
             gameMemoryRE4R = gameMemoryScanner.Refresh();
-		}
+            Data = gameMemoryRE4R;
+            LastUpdated = DateTime.UtcNow;
+        }
 
         public async Task<IActionResult> HttpHandlerAsync(Controller controller)
         {
