@@ -1,16 +1,23 @@
+@using Microsoft.AspNetCore.Components.Web
+@using NamespaceAlias = SRTPluginProducerRE4R
+@namespace NamespaceAlias.Views.Shared
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | RE4R</title>
+    <base href="~/" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="SRTHost.styles.css" rel="stylesheet" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body class="w-full h-full bg-slate-900 text-white">
     <header>
-        <!-- Header content goes here -->
     </header>
     <div class="mx-auto container w-full h-full">
         <main class="container w-full h-full" role="main">
@@ -18,7 +25,7 @@
         </main>
     </div>
     <footer>
-        <!-- Footer content goes here -->
     </footer>
+    <script src="_framework/blazor.server.js"></script>
 </body>
 </html>

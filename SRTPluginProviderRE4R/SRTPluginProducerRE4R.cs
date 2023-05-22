@@ -52,7 +52,7 @@ namespace SRTPluginProducerRE4R
                     {
                         try
                         {
-							return controller.View(command, new PluginConfigurationModel() { Configuration = config });
+							return controller.View(command, config);
                         }
                         catch (Exception ex)
                         {
