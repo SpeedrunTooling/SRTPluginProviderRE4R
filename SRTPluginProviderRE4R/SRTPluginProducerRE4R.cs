@@ -47,6 +47,8 @@ namespace SRTPluginProducerRE4R
             switch (command)
             {
                 // GET: /api/v1/Plugin/SRTPluginProducerRE4R/Config
+                case "MainHUD":
+                    return controller.Content(Properties.Resources.RE4R, "text/html", System.Text.Encoding.UTF8);
                 case "Config":
                     {
                         try
