@@ -1,17 +1,21 @@
-﻿<p role="status">Current count: @currentCount</p>
+﻿@code {
+	[Parameter]
+	public PluginConfiguration Model { get; set; }
+
+	private int currentCount = 0;
+
+	private void IncrementCount()
+	{
+		System.Diagnostics.Debugger.Break();
+		SRTPluginProducerRE4R.Config = Model;
+		currentCount++;
+	}
+}
+
+<p role="status">Current count: @currentCount</p>
 
 @Model.FontSize
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-@code {
-    [Parameter]
-    public PluginConfiguration Model { get; set; }
-    
-    private int currentCount = 0;
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-}
+<input class="text-black p-2 rounded-md" @bind="Model.FontSize" />

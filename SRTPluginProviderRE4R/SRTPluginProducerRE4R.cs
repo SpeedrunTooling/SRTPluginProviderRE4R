@@ -14,7 +14,7 @@ namespace SRTPluginProducerRE4R
     {
         private readonly ILogger<SRTPluginProducerRE4R> logger;
         private readonly IPluginHost pluginHost;
-        private readonly PluginConfiguration config;
+        public static PluginConfiguration Config { get; set; }
 
         // Properties
         public override IPluginInfo Info => new PluginInfo();
@@ -32,7 +32,7 @@ namespace SRTPluginProducerRE4R
 
             Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
             gameMemoryScanner = new GameMemoryRE4RScanner(gameProc);
-            config = DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
+            Config = DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 		}
 
         public void Refresh()
@@ -52,7 +52,7 @@ namespace SRTPluginProducerRE4R
                     {
                         try
                         {
-							return controller.View(command, config);
+							return controller.View(command, Config);
                         }
                         catch (Exception ex)
                         {
@@ -74,7 +74,7 @@ namespace SRTPluginProducerRE4R
             gameMemoryScanner?.Dispose();
             gameMemoryScanner = null;
             gameMemoryRE4R = null;
-			DbSaveConfiguration(config.ModelToConfigDictionary());
+			DbSaveConfiguration(Config.ModelToConfigDictionary());
 		}
 
         public override async ValueTask DisposeAsync()
