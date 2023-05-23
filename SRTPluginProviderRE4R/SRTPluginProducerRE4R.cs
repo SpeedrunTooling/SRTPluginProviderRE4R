@@ -32,42 +32,17 @@ namespace SRTPluginProducerRE4R
             Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
             gameMemoryScanner = new GameMemoryRE4RScanner(gameProc);
 			Config = DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
-		}
+
+            // Register pages.
+            registeredPages.Add("MainHUD", async (Controller controller) => controller.Content(Properties.Resources.RE4R, "text/html", System.Text.Encoding.UTF8)); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
+            registeredPages.Add("Config", async (Controller controller) => controller.View("Config", Config));
+        }
 
         public void Refresh()
         {
             gameMemoryRE4R = gameMemoryScanner.Refresh();
             Data = gameMemoryRE4R;
 			LastUpdated = DateTime.UtcNow;
-        }
-
-		public async Task<IActionResult> HttpHandlerAsync(Controller controller)
-        {
-            string command = controller.RouteData.Values["Command"] as string;
-            switch (command)
-            {
-                // GET: /api/v1/Plugin/SRTPluginProducerRE4R/Config
-                case "MainHUD":
-                    return controller.Content(Properties.Resources.RE4R, "text/html", System.Text.Encoding.UTF8);
-                case "Config":
-                    {
-                        try
-                        {
-							return controller.View(command, Config);
-                        }
-                        catch (Exception ex)
-                        {
-                            return controller.BadRequest(ex?.ToString());
-                        }
-                    }
-
-				// Example of handling unknown http requests.
-				// GET: /api/v1/Plugin/SRTPluginProducerRE4R/rksjbvgjbaethkae
-				default:
-                    {
-                        return controller.NotFound($"Unknown command: {((IDictionary<string, object>)controller.RouteData.Values)["Command"]}{Environment.NewLine}Parameters: {controller.Request.Query.Select(a => $"\"{a.Key}\"=\"{a.Value}\"").Aggregate((o, n) => $"{o}, {n}")}");
-                    }
-            }
         }
 
         public override void Dispose()
