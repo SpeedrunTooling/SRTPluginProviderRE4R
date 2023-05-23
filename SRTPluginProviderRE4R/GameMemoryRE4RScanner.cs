@@ -12,13 +12,14 @@ namespace SRTPluginProducerRE4R
 		private GameMemoryRE4R gameMemoryValues;
         private GameVersion gv = GameVersion.Unknown;
         public bool HasScanned;
-        private readonly int MAX_PARTNERS = 2;
-        private readonly int MAX_INVENTORIES = 8;
-        private readonly int MAX_ITEMS = 50;
-        private readonly int MAX_KEY_ITEMS = 50;
-        private readonly int MAX_TREASURE_ITEMS = 204;
-        private readonly int MAX_UNIQUE_ITEMS = 32;
-        private int previousCount = 0;
+		private readonly int MAX_ENEMIES = 32;
+		private readonly int MAX_PARTNERS = 2;
+        // private readonly int MAX_INVENTORIES = 8;
+        // private readonly int MAX_ITEMS = 50;
+        // private readonly int MAX_KEY_ITEMS = 50;
+        // private readonly int MAX_TREASURE_ITEMS = 204;
+        // private readonly int MAX_UNIQUE_ITEMS = 32;
+        // private int previousCount = 0;
         public bool ProcessRunning => memoryAccess != null && memoryAccess.ProcessRunning;
         public uint ProcessExitCode => (memoryAccess != null) ? memoryAccess.ProcessExitCode : 0;
 
@@ -47,8 +48,6 @@ namespace SRTPluginProducerRE4R
         private MultilevelPointer PointerLastItem { get; set; }
         private MultilevelPointer PointerSpinel { get; set; }
         private MultilevelPointer PointerCampaignManager { get; set; }
-
-        private PlayerContext NullPlayerContext = new PlayerContext();
         internal GameMemoryRE4RScanner(Process process = null)
         {
             gameMemoryValues = new GameMemoryRE4R();
@@ -77,7 +76,7 @@ namespace SRTPluginProducerRE4R
                 gameMemoryValues._enemies = new PlayerContext[32];
                 PointerEnemyContext = new MultilevelPointer[32];
 
-                for (int i = 0; i < 32; ++i)
+                for (int i = 0; i < MAX_ENEMIES; ++i)
                 {
                     gameMemoryValues._enemies[i] = new PlayerContext();
                     PointerEnemyContext[i] = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8, 0x40 + (i * sizeof(nuint)));
@@ -96,7 +95,6 @@ namespace SRTPluginProducerRE4R
                 PointerLastItem = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressHighwayGuiManager), 0xE0);
                 PointerSpinel = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInGameShopManager));
                 PointerCampaignManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCampaignManager));
-                // PointerGameClockGameSaveData = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameClock), 0x20);
             }
         }
 
@@ -157,7 +155,7 @@ namespace SRTPluginProducerRE4R
             PointerSpinel.UpdatePointers();
             PointerCampaignManager.UpdatePointers();
 
-            for (int i = 0; i < PointerEnemyContext.Length; ++i)
+            for (int i = 0; i < MAX_ENEMIES; ++i)
                 PointerEnemyContext[i].UpdatePointers();
         }
 
@@ -182,9 +180,9 @@ namespace SRTPluginProducerRE4R
                 if (gameMemoryValues._partnerContext[i] == null)
                     gameMemoryValues._partnerContext[i] = new PlayerContext();
 
-                if (i > li.Count)
+                if (i >= li.Count)
                 {
-                    gameMemoryValues._partnerContext[i] = NullPlayerContext;
+                    gameMemoryValues._partnerContext[i] = default;
                     continue;
                 }
                 var position = (i * 0x8) + 0x20;
@@ -202,8 +200,13 @@ namespace SRTPluginProducerRE4R
         {
             gameMemoryValues.enemyArraySize = PointerEnemyCount.DerefInt(0x3C);
             // EnemyContext
-            for (int i = 0; i < gameMemoryValues.enemyArraySize; ++i)
+            for (int i = 0; i < MAX_ENEMIES; ++i)
             {
+                if (i >= gameMemoryValues.enemyArraySize)
+                {
+                    gameMemoryValues._enemies[i].SetValues(default, default);
+					continue;
+                }
                 var cc = PointerEnemyContext[i].Deref<CharacterContext>(0x0);
                 var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
                 gameMemoryValues._enemies[i].SetValues(cc, hp);

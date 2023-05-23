@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Platforms>x64</Platforms>
     <Authors>TheDementedSalad, Squirrelies, VideoGameRoulette</Authors>
@@ -20,6 +20,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
 		<PackageReference Include="ProcessMemory64" Version="4.0.*-*" />
 	</ItemGroup>
 	

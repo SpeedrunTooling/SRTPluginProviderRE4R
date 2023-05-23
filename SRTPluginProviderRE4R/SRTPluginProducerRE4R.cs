@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Drawing.Text;
 
 namespace SRTPluginProducerRE4R
 {
@@ -37,6 +38,7 @@ namespace SRTPluginProducerRE4R
                     Configuration = JsonSerializer.Deserialize<PluginConfiguration>(controller.Request.Query["Config"]);
 				return controller.View("Config", Configuration as PluginConfiguration);
             });
+			registeredPages.Add("AvailableFonts", async (Controller controller) => controller.Content(JsonSerializer.Serialize(new InstalledFontCollection().Families.Select(a => a.Name)), "application/json", Encoding.UTF8));
 		}
 
         public object? Refresh() => gameMemoryScanner.Refresh();
