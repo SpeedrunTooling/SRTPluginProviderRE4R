@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SRTPluginBase;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 
 namespace SRTPluginProducerRE4R
 {
@@ -13,16 +13,12 @@ namespace SRTPluginProducerRE4R
     {
         private readonly ILogger<SRTPluginProducerRE4R> logger;
         private readonly IPluginHost pluginHost;
-        public static PluginConfiguration Config { get; set; }
 
         // Properties
         public override IPluginInfo Info => new PluginInfo();
-        public object? Data { get; private set; }
-        public DateTime? LastUpdated { get; private set; }
 
         // Fields
         private GameMemoryRE4RScanner gameMemoryScanner;
-        private IGameMemoryRE4R gameMemoryRE4R;
 
 		public SRTPluginProducerRE4R(ILogger<SRTPluginProducerRE4R> logger, IPluginHost pluginHost) : base()
         {
@@ -31,26 +27,25 @@ namespace SRTPluginProducerRE4R
 
             Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
             gameMemoryScanner = new GameMemoryRE4RScanner(gameProc);
-			Config = DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
+            Configuration = (IPluginConfiguration)DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 
             // Register pages.
-            registeredPages.Add("MainHUD", async (Controller controller) => controller.Content(Properties.Resources.RE4R, "text/html", System.Text.Encoding.UTF8)); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
-            registeredPages.Add("Config", async (Controller controller) => controller.View("Config", Config));
-        }
+            registeredPages.Add("MainHUD", async (Controller controller) => controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8)); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
+			registeredPages.Add("Config", async (Controller controller) =>
+            {
+				if (controller.Request.Query.ContainsKey("Config"))
+                    Configuration = JsonSerializer.Deserialize<PluginConfiguration>(controller.Request.Query["Config"]);
+				return controller.View("Config", Configuration as PluginConfiguration);
+            });
+		}
 
-        public void Refresh()
-        {
-            gameMemoryRE4R = gameMemoryScanner.Refresh();
-            Data = gameMemoryRE4R;
-			LastUpdated = DateTime.UtcNow;
-        }
+        public object? Refresh() => gameMemoryScanner.Refresh();
 
-        public override void Dispose()
+		public override void Dispose()
         {
             gameMemoryScanner?.Dispose();
             gameMemoryScanner = null;
-            gameMemoryRE4R = null;
-			DbSaveConfiguration(Config.ModelToConfigDictionary());
+			DbSaveConfiguration(((PluginConfiguration)Configuration).ModelToConfigDictionary());
 		}
         public override async ValueTask DisposeAsync()
         {

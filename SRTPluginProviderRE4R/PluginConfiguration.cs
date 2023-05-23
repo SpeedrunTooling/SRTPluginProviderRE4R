@@ -1,6 +1,8 @@
-﻿namespace SRTPluginProducerRE4R
+﻿using SRTPluginBase;
+
+namespace SRTPluginProducerRE4R
 {
-	public class PluginConfiguration
+	public class PluginConfiguration : IPluginConfiguration
 	{
 		public bool Debug { get; set; }
 		// public bool ShowInventory { get; set; }

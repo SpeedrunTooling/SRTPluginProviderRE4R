@@ -1,10 +1,13 @@
+@using SRTPluginProducerRE4R;
 @using SRTPluginProducerRE4R.Pages.Shared;
-@model SRTPluginProducerRE4R.PluginConfiguration
+@using Microsoft.AspNetCore.Http;
+@model PluginConfiguration
 @{
 	ViewData["Title"] = "Config";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@(
-await Html.RenderComponentAsync<Config>(RenderMode.ServerPrerendered, new { Model = Model })
-)
+@(await Html.RenderComponentAsync<Config>(RenderMode.ServerPrerendered, new
+	{
+	Configuration = Model,
+	}))

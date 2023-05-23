@@ -20,12 +20,27 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SRTPluginBase" Version="4.0.*-*">
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
 		<PackageReference Include="ProcessMemory64" Version="4.0.*-*" />
 	</ItemGroup>
+	
+	<Choose>
+		<When Condition="'$(Configuration)'=='Debug'">
+			<ItemGroup>
+				<ProjectReference Include="..\..\..\SpeedRunTool\SRTPluginBase\src\SRTPluginBase\SRTPluginBase.csproj">
+					<Private>false</Private>
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</ProjectReference>
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<PackageReference Include="SRTPluginBase" Version="4.0.*-*">
+					<Private>false</Private>
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">
