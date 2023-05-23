@@ -14,8 +14,8 @@ namespace SRTPluginProducerRE4R
         private readonly ILogger<SRTPluginProducerRE4R> logger;
         private readonly IPluginHost pluginHost;
 
-        // Properties
-        public override IPluginInfo Info => new PluginInfo();
+		// Properties
+		public override IPluginInfo Info => new PluginInfo();
 
         // Fields
         private GameMemoryRE4RScanner gameMemoryScanner;
@@ -25,12 +25,12 @@ namespace SRTPluginProducerRE4R
             this.logger = logger;
             this.pluginHost = pluginHost;
 
-            Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
+			Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
             gameMemoryScanner = new GameMemoryRE4RScanner(gameProc);
             Configuration = (IPluginConfiguration)DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 
-            // Register pages.
-            registeredPages.Add("MainHUD", async (Controller controller) => controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8)); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
+			// Register pages.
+			registeredPages.Add("MainHUD", async (Controller controller) => controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8)); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
 			registeredPages.Add("Config", async (Controller controller) =>
             {
 				if (controller.Request.Query.ContainsKey("Config"))

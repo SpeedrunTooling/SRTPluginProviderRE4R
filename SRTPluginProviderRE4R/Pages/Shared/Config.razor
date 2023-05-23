@@ -2,10 +2,21 @@
 @using Microsoft.AspNetCore.Http
 @using System.Text.Json;
 @using System.Text;
+@using System.Collections.Generic;
 @inject NavigationManager NavigationManager
+
 @code {
 	[Parameter]
 	public PluginConfiguration Configuration { get; set; }
+
+	private List<string> FontList { get; set; } = new List<string>()
+	{	
+		"Arial",
+		"Bahnschrift",
+		"Comic Sans MS",
+		"Consolas",
+		"Courier New",
+		"Times New Roman"	};
 
 	private void SaveConfig()
 	{
@@ -57,13 +68,10 @@
 					Font Name
 					@{
 						<select class="h-full text-black p-2 rounded-md" @bind="Configuration.StringFontName">
-							<option value="Arial" selected="@(Configuration.StringFontName == "Arial Black")">Arial Black</option>
-							<option value="Bahnschrift" selected="@(Configuration.StringFontName == "Bahnschrift")">Bahnschrift</option>
-							<option value="Comic Sans MS" selected="@(Configuration.StringFontName == "Comic Sans MS")">Comic Sans MS</option>
-							<option value="Courier New" selected="@(Configuration.StringFontName == "Consolas")">Consolas</option>
-							<option value="Courier New" selected="@(Configuration.StringFontName == "Courier New")">Courier New</option>
-							<option value="Impact" selected="@(Configuration.StringFontName == "Impact")">Impact</option>
-							<option value="Times New Roman" selected="@(Configuration.StringFontName == "Times New Roman")">Times New Roman</option>
+							@foreach (var font in FontList)
+							{
+								<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
+							}
 						</select>
 					}
 				</label>
