@@ -12,6 +12,7 @@ namespace SRTPluginProducerRE4R
 		private GameMemoryRE4R gameMemoryValues;
         private GameVersion gv = GameVersion.Unknown;
         public bool HasScanned;
+        public DateTimeOffset LastPointerUpdate;
 		private readonly int MAX_ENEMIES = 32;
 		private readonly int MAX_PARTNERS = 2;
         // private readonly int MAX_INVENTORIES = 8;
@@ -44,7 +45,7 @@ namespace SRTPluginProducerRE4R
         private MultilevelPointer PointerGameRankManager { get; set; }
         private MultilevelPointer PointerGameClock { get; set; }
         private MultilevelPointer PointerInventoryManager { get; set; }
-        private MultilevelPointer PointerInGameShopManager { get; set; }
+        private MultilevelPointer InGameShopFlowController { get; set; }
         private MultilevelPointer PointerLastItem { get; set; }
         private MultilevelPointer PointerSpinel { get; set; }
         private MultilevelPointer PointerCampaignManager { get; set; }
@@ -91,11 +92,13 @@ namespace SRTPluginProducerRE4R
                 PointerGameClock = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameClock));
                 PointerInventoryManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInventoryManager));
                 PointerEnemyCount = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8);
-                PointerInGameShopManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInGameShopManager), 0x18);
+                InGameShopFlowController = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInGameShopManager), 0x18);
                 PointerLastItem = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressHighwayGuiManager), 0xE0);
                 PointerSpinel = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInGameShopManager));
                 PointerCampaignManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCampaignManager));
-            }
+
+				LastPointerUpdate = DateTimeOffset.UtcNow;
+			}
         }
 
         private GameVersion SelectPointerAddresses(GameVersion version)
@@ -143,7 +146,12 @@ namespace SRTPluginProducerRE4R
 
         internal void UpdatePointers()
         {
-            PointerInGameShopManager.UpdatePointers();
+            // Only update pointers once every n seconds.
+            if ((DateTimeOffset.UtcNow - LastPointerUpdate).TotalSeconds < 5d)
+                return;
+            LastPointerUpdate = DateTimeOffset.UtcNow;
+
+			InGameShopFlowController.UpdatePointers();
             PointerEnemyCount.UpdatePointers();
             PointerCharacterContext.UpdatePointers();
             PointerPartnerContext.UpdatePointers();
@@ -327,7 +335,9 @@ namespace SRTPluginProducerRE4R
 
         internal unsafe IGameMemoryRE4R Refresh()
         {
-            gameMemoryValues._isInGameShopOpen = PointerInGameShopManager.DerefInt(0x50) != 0;
+            UpdatePointers();
+
+			gameMemoryValues._isInGameShopOpen = InGameShopFlowController.DerefInt(0x50) != 0;
             gameMemoryValues._chapterId = PointerCampaignManager.DerefInt(0x30);
             gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8);
             gameMemoryValues._spinel = PointerSpinel.DerefInt(0x20);
