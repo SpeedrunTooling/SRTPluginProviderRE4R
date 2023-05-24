@@ -1,10 +1,11 @@
 //LOCAL JSON SERVER SETTINGS
-var JSON_ADDRESS = "127.0.0.1";
-const JSON_PORT = 7191;
+var JSON_ENDPOINT = ``;
 const POLLING_RATE = 500;
-var JSON_ENDPOINT = `http://${JSON_ADDRESS}:${JSON_PORT}/api/v1/Plugin/SRTPluginProducerRE4R/Data`;
 
 window.onload = function () {
+	var currentURL = window.location.href;
+	var baseURL = currentURL.split("/").slice(0, 3).join("/");
+	JSON_ENDPOINT = `${baseURL}/api/v1/Plugin/SRTPluginProducerRE4R/Data`;
 	getData();
 	setInterval(getData, POLLING_RATE);
 };
@@ -22,7 +23,14 @@ var Desc = function (a, b) {
 };
 
 function getData() {
-	fetch(JSON_ENDPOINT)
+	if (JSON_ENDPOINT == ``) return;
+	fetch(JSON_ENDPOINT, {
+		method: 'GET',
+		mode: 'cors',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
 		.then(function (response) {
 			return response.json();
 		})
