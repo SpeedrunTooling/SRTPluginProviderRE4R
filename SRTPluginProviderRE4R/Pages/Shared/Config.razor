@@ -1,9 +1,10 @@
 ﻿@using SRTPluginBase;
-@using Microsoft.AspNetCore.Http
-@using System.Text.Json;
-@using System.Text;
+@using Microsoft.AspNetCore.Http;
 @using System.Collections.Generic;
-@inject NavigationManager NavigationManager
+@using System.Text;
+@using System.Text.Json;
+@inject NavigationManager NavigationManager;
+@inject IHttpClientFactory httpClientFactory
 
 @code {
 	[Parameter]
@@ -49,6 +50,25 @@
 		"Webdings",
 		"Wingdings"
 	};
+
+	private List<string> data;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await FetchData();
+	}
+
+	private async Task FetchData()
+	{
+		var response = await httpClientFactory.CreateClient().GetAsync("/api/v1/Plugin/SRTPluginProducerRE4R/AvailableFonts");
+
+		if (response.IsSuccessStatusCode)
+		{
+			var json = await response.Content.ReadAsStringAsync();
+			data = JsonSerializer.Deserialize<List<string>>(json);
+		}
+		else data = new List<string> { $"Error: {response.StatusCode}" };
+	}
 
 	private void SaveConfig()
 	{
@@ -100,7 +120,7 @@
 					Font Name
 					@{
 						<select class="h-full text-black p-2 rounded-md" @bind="Configuration.StringFontName">
-							@foreach (var font in FontList)
+							@foreach (var font in data)
 							{
 								<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
 							}
