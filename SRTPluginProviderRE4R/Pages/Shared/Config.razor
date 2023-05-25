@@ -3,6 +3,7 @@
 @using System.Collections.Generic;
 @using System.Text;
 @using System.Text.Json;
+@using System.Diagnostics;
 @inject NavigationManager NavigationManager;
 @inject IHttpClientFactory httpClientFactory
 
@@ -51,23 +52,23 @@
 		"Wingdings"
 	};
 
-	private List<string> data;
-
 	protected override async Task OnInitializedAsync()
 	{
 		await FetchData();
+		StateHasChanged();
 	}
 
 	private async Task FetchData()
 	{
-		var response = await httpClientFactory.CreateClient().GetAsync("/api/v1/Plugin/SRTPluginProducerRE4R/AvailableFonts");
+		// Debugger.Break();
+		var response = await httpClientFactory.CreateClient().GetAsync($"{NavigationManager.BaseUri}api/v1/Plugin/SRTPluginProducerRE4R/AvailableFonts");
 
 		if (response.IsSuccessStatusCode)
 		{
 			var json = await response.Content.ReadAsStringAsync();
-			data = JsonSerializer.Deserialize<List<string>>(json);
+			FontList.Clear();
+			FontList = JsonSerializer.Deserialize<List<string>>(json);
 		}
-		else data = new List<string> { $"Error: {response.StatusCode}" };
 	}
 
 	private void SaveConfig()
@@ -120,9 +121,12 @@
 					Font Name
 					@{
 						<select class="h-full text-black p-2 rounded-md" @bind="Configuration.StringFontName">
-							@foreach (var font in data)
+							@if (FontList is not null)
 							{
-								<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
+								@foreach (var font in FontList)
+								{
+									<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
+								}
 							}
 						</select>
 					}
