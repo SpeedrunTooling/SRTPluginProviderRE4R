@@ -12,13 +12,15 @@ namespace SRTPluginProducerRE4R.Structs
         private bool measureInventorySpendingTime;
         private bool measurePauseSpendingTime;
         private GameClockGameSaveData gameSaveData;
+		private long timerOffset;
 
-        public bool MeasureGameElapsedTime { get => measureGameElapsedTime; set => measureGameElapsedTime = value; }
+		public bool MeasureGameElapsedTime { get => measureGameElapsedTime; set => measureGameElapsedTime = value; }
         public bool MeasureDemoSpendingTime { get => measureDemoSpendingTime; set => measureDemoSpendingTime = value; }
         public bool MeasureInventorySpendingTime { get => measureInventorySpendingTime; set => measureInventorySpendingTime = value; }
         public bool MeasurePauseSpendingTime { get => measurePauseSpendingTime; set => measurePauseSpendingTime = value; }
         public GameClockGameSaveData GameSaveData { get => gameSaveData; set => gameSaveData = value; }
-        private long IGTCalculated => unchecked(GameSaveData.GameElapsedTime - GameSaveData.DemoSpendingTime - GameSaveData.PauseSpendingTime);
+		public long TimerOffset { get => timerOffset; set => timerOffset = value; }
+		private long IGTCalculated => unchecked(GameSaveData.GameElapsedTime - GameSaveData.DemoSpendingTime - GameSaveData.PauseSpendingTime - TimerOffset);
         private long IGTCalculatedTicks => unchecked(IGTCalculated * 10L);
         private TimeSpan IGTTimeSpan
         {
@@ -45,13 +47,14 @@ namespace SRTPluginProducerRE4R.Structs
             gameSaveData = default(GameClockGameSaveData);
         }
 
-        public void SetValues(GameClock gc, GameClockGameSaveData gsd)
+        public void SetValues(GameClock gc, GameClockGameSaveData gsd, long offset)
         {
             measureGameElapsedTime = gc.MeasureGameElapsedTime;
             measureDemoSpendingTime = gc.MeasureDemoSpendingTime;
             measureInventorySpendingTime = gc.MeasureInventorySpendingTime;
             measurePauseSpendingTime = gc.MeasurePauseSpendingTime;
             gameSaveData = gsd;
+            timerOffset = offset;
         }
     }
 

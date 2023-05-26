@@ -15,11 +15,17 @@ namespace SRTPluginProducerRE4R
         public bool IsInGameShopOpen { get => _isInGameShopOpen; set => _isInGameShopOpen = value; }
         internal bool _isInGameShopOpen;
 
-        private ChapterID ChapterId { get => (ChapterID)_chapterId; set => _chapterId = (int)value; }
+		public bool IsNewGame { get => _isNewGame; set => _isNewGame = value; }
+		internal bool _isNewGame;
+
+		private ChapterID ChapterId { get => (ChapterID)_chapterId; set => _chapterId = (int)value; }
         internal int _chapterId;
 
         public string CurrentChapter => ChapterId.ToString();
 
+		public long TimerOffset { get => _timerOffset; set => _timerOffset = value; }
+		internal long _timerOffset;
+		
         public GameTimer Timer { get => _timer; set => _timer = value; }
         internal GameTimer _timer;
 
