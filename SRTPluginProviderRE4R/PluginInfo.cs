@@ -1,28 +1,26 @@
 ﻿using SRTPluginBase;
 using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace SRTPluginProducerRE4R
 {
-    internal class PluginInfo : IPluginInfo
+    internal class PluginInfo : PluginInfoBase, IPluginInfo
     {
-        public string Name => "Game Memory Producer (Resident Evil 4 (2023))";
+        public override string Name => "Game Memory Producer (Resident Evil 4 (2023))";
 
-        public string Description => "A game memory producer plugin for Resident Evil 4 (2023).";
+        public override string Description => "A game memory producer plugin for Resident Evil 4 (2023).";
 
-        public string Author => "TheDementedSalad, Squirrelies, VideoGameRoulette";
+        public override string Author => "TheDementedSalad, Squirrelies, VideoGameRoulette";
 
-        public Uri MoreInfoURL => new Uri("https://github.com/SpeedrunTooling/SRTPluginProducerRE4R");
+        public override Uri MoreInfoURL => new Uri("https://github.com/SpeedrunTooling/SRTPluginProducerRE4R");
 
-        public int VersionMajor => assemblyVersion?.Major ?? 0;
+        public override int VersionMajor => GetProductVersion().Major;
 
-        public int VersionMinor => assemblyVersion?.Minor ?? 0;
+        public override int VersionMinor => GetProductVersion().Minor;
 
-        public int VersionBuild => assemblyVersion?.Build ?? 0;
+        public override int VersionBuild => GetProductVersion().Build;
 
-        public int VersionRevision => assemblyVersion?.Revision ?? 0;
-
-        private readonly Version? assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-
-        public bool Equals(IPluginInfo? other) => Equals(this, other);
+        public override int VersionRevision => GetProductVersion().Revision;
     }
 }
