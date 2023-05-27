@@ -3,6 +3,7 @@
 @using System.Collections.Generic;
 @using System.Text;
 @using System.Text.Json;
+@using System.Diagnostics;
 @inject NavigationManager NavigationManager;
 @inject IHttpClientFactory httpClientFactory
 
@@ -51,23 +52,22 @@
 		"Wingdings"
 	};
 
-	private List<string> data;
-
 	protected override async Task OnInitializedAsync()
 	{
 		await FetchData();
+		StateHasChanged();
 	}
 
 	private async Task FetchData()
 	{
-		var response = await httpClientFactory.CreateClient().GetAsync("/api/v1/Plugin/SRTPluginProducerRE4R/AvailableFonts");
+		var response = await httpClientFactory.CreateClient().GetAsync($"{NavigationManager.BaseUri}api/v1/Plugin/SRTPluginProducerRE4R/AvailableFonts");
 
 		if (response.IsSuccessStatusCode)
 		{
 			var json = await response.Content.ReadAsStringAsync();
-			data = JsonSerializer.Deserialize<List<string>>(json);
+			FontList.Clear();
+			FontList = JsonSerializer.Deserialize<List<string>>(json);
 		}
-		else data = new List<string> { $"Error: {response.StatusCode}" };
 	}
 
 	private void SaveConfig()
@@ -81,9 +81,33 @@
 	<div class="w-full flex flex-col gap-2 px-4">
 		<div class="w-full h-auto flex flex-col gap-2 rounded-md justify-center rounded-md bg-zinc-700">
 			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Debug Settings</h1>
-			<div class="w-full grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 px-4 pb-4 gap-2">
+			<div class="w-full grid md:grid-cols-3 grid-cols-2 px-4 pb-4 gap-2">
 				<label>
 					<input type="checkbox" @bind="Configuration.Debug" /> Show Debug Timer Info
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.AlignInfoTop" /> Algin Info To Top
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.HideUICutscene" /> Hide UI Cutscene
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.HideUIInventory" /> Hide UI Inventory
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.HideUIPause" /> Hide UI Pause
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.HideUIInShop" /> Hide UI In Shop
+				</label>
+
+				<label>
+					<input type="checkbox" @bind="Configuration.ShowIGT" /> Show In Game Timer
 				</label>
 
 				<label>
@@ -120,9 +144,12 @@
 					Font Name
 					@{
 						<select class="h-full text-black p-2 rounded-md" @bind="Configuration.StringFontName">
-							@foreach (var font in data)
+							@if (FontList is not null)
 							{
-								<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
+								@foreach (var font in FontList)
+								{
+									<option value="@font" selected="@(Configuration.StringFontName == font)">@font</option>
+								}
 							}
 						</select>
 					}
@@ -168,8 +195,8 @@
 
 		<div class="w-full h-auto flex flex-col gap-2 rounded-md bg-zinc-700">
 			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">HP Bar Settings</h1>
-			<div class="col-span-3 grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 px-4 pb-4 gap-2">
-				<label>
+			<div class="col-span-3 grid md:grid-cols-3 grid-cols-2 px-4 pb-4 gap-2">
+				<label class="col-span-2">
 					<input type="checkbox" @bind="Configuration.ShowHPBars" /> Show HP Bars
 				</label>
 

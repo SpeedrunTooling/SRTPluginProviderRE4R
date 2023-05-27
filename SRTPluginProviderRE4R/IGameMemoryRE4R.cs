@@ -11,7 +11,9 @@ namespace SRTPluginProducerRE4R
 
         bool IsInGameShopOpen { get; }
 
-        string CurrentChapter { get; }
+		bool IsNewGame { get; }
+
+		string CurrentChapter { get; }
 
         GameTimer Timer { get; }
 

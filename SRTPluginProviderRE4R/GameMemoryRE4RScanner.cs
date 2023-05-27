@@ -172,8 +172,11 @@ namespace SRTPluginProducerRE4R
             // GameClock
             var gc = PointerGameClock.Deref<GameClock>(0x0);
             var gsd = memoryAccess.GetAt<GameClockGameSaveData>((nuint*)gc.GameSaveData);
-            gameMemoryValues._timer.SetValues(gc, gsd);
-        }
+			if (gameMemoryValues.IsNewGame)
+				gameMemoryValues._timerOffset = gsd.GameElapsedTime - gsd.DemoSpendingTime - gsd.PauseSpendingTime;
+			gameMemoryValues._timer.SetValues(gc, gsd, gameMemoryValues._timerOffset);
+            
+		}
 
         private unsafe void UpdatePlayerContext()
         {
@@ -339,7 +342,8 @@ namespace SRTPluginProducerRE4R
 
 			gameMemoryValues._isInGameShopOpen = InGameShopFlowController.DerefInt(0x50) != 0;
             gameMemoryValues._chapterId = PointerCampaignManager.DerefInt(0x30);
-            gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8);
+			gameMemoryValues._isNewGame = PointerCampaignManager.DerefByte(0x48) != 0;
+			gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8);
             gameMemoryValues._spinel = PointerSpinel.DerefInt(0x20);
             UpdatePlayerContext();
             UpdateInventoryManager();
