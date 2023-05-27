@@ -15,7 +15,9 @@ namespace SRTPluginProducerRE4R.Structs
         private int count;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#pragma warning disable IDE1006 // Naming Styles
         public string _DebuggerDisplay
+#pragma warning restore IDE1006 // Naming Styles
         {
             get
             {
@@ -30,14 +32,14 @@ namespace SRTPluginProducerRE4R.Structs
         public bool IsRotated => currDirection == ItemDirection.Rot_090;
         public int Count { get => count; set => count = value; }
 
-        public void SetValues(Item item, InventoryItemBase inventoryItemBase, ItemDefinition itemDefinition)
+        public void SetValues(Item? item, InventoryItemBase? inventoryItemBase, ItemDefinition? itemDefinition)
         {
-            itemId = item.ItemId;
-            row = inventoryItemBase.Row;
-            column = inventoryItemBase.Column;
-            itemSize = itemDefinition.ItemSize;
-            currDirection = inventoryItemBase.CurrDirection;
-            count = item.CurrentItemCount;
+            itemId = item?.ItemId ?? default;
+            row = inventoryItemBase?.Row ?? default;
+            column = inventoryItemBase?.Column ?? default;
+            itemSize = itemDefinition?.ItemSize ?? default;
+            currDirection = inventoryItemBase?.CurrDirection ?? default;
+            count = item?.CurrentItemCount ?? default;
         }
     }
 

@@ -11,23 +11,23 @@ namespace SRTPluginProducerRE4R.Structs
         private int kindID;
         private Vec3 position;
         private Quat rotation;
-        private HitPoint health;
+        private HitPoint? health;
 
         public CharacterKindID KindID { get => (CharacterKindID)kindID; set => kindID = (int)value; }
         public string SurvivorTypeString => KindID.ToString();
         public Vec3 Position { get => position; set => position = value; }
         public Quat Rotation { get => rotation; set => rotation = value; }
-        public HitPoint Health { get => health; set => health = value; }
+        public HitPoint? Health { get => health; set => health = value; }
         public PlayerState HealthState
         {
             get =>
-                !Health.IsAlive ? PlayerState.Dead :
-                Health.Percentage >= 0.66f ? PlayerState.Fine :
-                Health.Percentage >= 0.33f ? PlayerState.Caution :
+                !Health?.IsAlive ?? default ? PlayerState.Dead :
+                Health?.Percentage >= 0.66f ? PlayerState.Fine :
+                Health?.Percentage >= 0.33f ? PlayerState.Caution :
                 PlayerState.Danger;
         }
         public string CurrentHealthState => HealthState.ToString();
-        public bool IsLoaded => KindID != CharacterKindID.None && Health.MaxHP != 0;
+        public bool IsLoaded => KindID != CharacterKindID.None && Health?.MaxHP != 0;
         public bool IsIgnored => CharacterUtils.IgnoreList.Contains(KindID);
         public bool IsAnimal => CharacterUtils.AnimalList.Contains(KindID);
         public bool IsBoss => CharacterUtils.BossList.Contains(KindID);
@@ -35,15 +35,15 @@ namespace SRTPluginProducerRE4R.Structs
         public PlayerContext()
         {
             kindID = -1;
-            Position = new Vec3(0, 0, 0);
-            Rotation = new Quat(0, 0, 0, 0);
+            position = new Vec3(0, 0, 0);
+            rotation = new Quat(0, 0, 0, 0);
         }
 
-        public void SetValues(CharacterContext cc, HitPoint hp)
+        public void SetValues(CharacterContext? cc, HitPoint? hp)
         {
-            KindID = cc.KindID;
-            Position.Update(cc.X, cc.Y, cc.Z);
-            Rotation.Update(cc.RW, cc.RX, cc.RY, cc.RZ);
+            KindID = cc?.KindID ?? 0;
+            Position.Update(cc?.X ?? 0f, cc?.Y ?? 0f, cc?.Z ?? 0f);
+            Rotation.Update(cc?.RW ?? 0f, cc?.RX ?? 0f, cc?.RY ?? 0f, cc?.RZ ?? 0f);
             Health = hp;
         }
     }
@@ -180,7 +180,9 @@ namespace SRTPluginProducerRE4R.Structs
         /// Debugger display message.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#pragma warning disable IDE1006 // Naming Styles
         public string _DebuggerDisplay
+#pragma warning restore IDE1006 // Naming Styles
         {
             get
             {

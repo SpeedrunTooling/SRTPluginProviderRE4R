@@ -6,21 +6,22 @@ namespace SRTPluginProducerRE4R.Structs
 {
     public class GameTimer
     {
+        public const string IGT_DEFAULT_STRING = "--:--:--";
         private const string IGT_TIMESPAN_STRING_FORMAT = @"hh\:mm\:ss";
         private bool measureGameElapsedTime;
         private bool measureDemoSpendingTime;
         private bool measureInventorySpendingTime;
         private bool measurePauseSpendingTime;
-        private GameClockGameSaveData gameSaveData;
+        private GameClockGameSaveData? gameSaveData;
 		private long timerOffset;
 
 		public bool MeasureGameElapsedTime { get => measureGameElapsedTime; set => measureGameElapsedTime = value; }
         public bool MeasureDemoSpendingTime { get => measureDemoSpendingTime; set => measureDemoSpendingTime = value; }
         public bool MeasureInventorySpendingTime { get => measureInventorySpendingTime; set => measureInventorySpendingTime = value; }
         public bool MeasurePauseSpendingTime { get => measurePauseSpendingTime; set => measurePauseSpendingTime = value; }
-        public GameClockGameSaveData GameSaveData { get => gameSaveData; set => gameSaveData = value; }
+        public GameClockGameSaveData? GameSaveData { get => gameSaveData; set => gameSaveData = value; }
 		public long TimerOffset { get => timerOffset; set => timerOffset = value; }
-		private long IGTCalculated => unchecked(GameSaveData.GameElapsedTime - GameSaveData.DemoSpendingTime - GameSaveData.PauseSpendingTime - TimerOffset);
+		private long IGTCalculated => unchecked(((GameSaveData?.GameElapsedTime - GameSaveData?.DemoSpendingTime - GameSaveData?.PauseSpendingTime) ?? 0L) - TimerOffset);
         private long IGTCalculatedTicks => unchecked(IGTCalculated * 10L);
         private TimeSpan IGTTimeSpan
         {
@@ -47,12 +48,12 @@ namespace SRTPluginProducerRE4R.Structs
             gameSaveData = default(GameClockGameSaveData);
         }
 
-        public void SetValues(GameClock gc, GameClockGameSaveData gsd, long offset)
-        {
-            measureGameElapsedTime = gc.MeasureGameElapsedTime;
-            measureDemoSpendingTime = gc.MeasureDemoSpendingTime;
-            measureInventorySpendingTime = gc.MeasureInventorySpendingTime;
-            measurePauseSpendingTime = gc.MeasurePauseSpendingTime;
+        public void SetValues(GameClock? gc, GameClockGameSaveData? gsd, long offset)
+        { // TODO: ADD NULL CHECKS HERE
+            measureGameElapsedTime = gc?.MeasureGameElapsedTime ?? default;
+            measureDemoSpendingTime = gc?.MeasureDemoSpendingTime ?? default;
+            measureInventorySpendingTime = gc?.MeasureInventorySpendingTime ?? default;
+            measurePauseSpendingTime = gc?.MeasurePauseSpendingTime ?? default;
             gameSaveData = gsd;
             timerOffset = offset;
         }

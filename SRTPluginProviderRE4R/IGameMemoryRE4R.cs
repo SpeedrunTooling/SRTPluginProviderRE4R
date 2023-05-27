@@ -15,11 +15,11 @@ namespace SRTPluginProducerRE4R
 
 		string CurrentChapter { get; }
 
-        GameTimer Timer { get; }
+        GameTimer? Timer { get; }
 
-        PlayerContext PlayerContext { get; }
+        PlayerContext? PlayerContext { get; }
 
-        PlayerContext[] PartnerContext { get; }
+        PlayerContext?[]? PartnerContext { get; }
 
         int LastItem { get; }
 
@@ -27,7 +27,7 @@ namespace SRTPluginProducerRE4R
 
         CaseSize CaseSize { get; }
 
-        InventoryEntry[] Items { get; }
+        InventoryEntry[]? Items { get; }
 
         int PTAS { get; }
 
@@ -35,17 +35,17 @@ namespace SRTPluginProducerRE4R
 
         int KeyItemCount { get; }
 
-        InventoryEntry[] KeyItems { get; }
+        InventoryEntry[]? KeyItems { get; }
 
         int TreasureItemsCount { get; }
 
-        InventoryEntry[] TreasureItems { get; }
+        InventoryEntry[]? TreasureItems { get; }
 
         int UniqueCount { get; }
 
-        InventoryEntry[] UniqueItems { get; }
+        InventoryEntry[]? UniqueItems { get; }
 
-        PlayerContext[] Enemies { get; }
+        PlayerContext?[]? Enemies { get; }
 
         int EnemyArraySize { get; }
 

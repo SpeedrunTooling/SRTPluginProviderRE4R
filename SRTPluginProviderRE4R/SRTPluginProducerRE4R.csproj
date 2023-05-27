@@ -14,6 +14,7 @@
     <FileVersion>2.0.0.1</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <DebugType>embedded</DebugType>
+	<Nullable>enable</Nullable>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<CopyDestionationPath>$(SolutionDir)..\..\SpeedRunTool\SRTHost\src\SRTHost\bin\$(Configuration)\net7.0-windows\plugins</CopyDestionationPath>

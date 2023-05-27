@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace SRTPluginProducerRE4R
 {
@@ -19,36 +20,38 @@ namespace SRTPluginProducerRE4R
         private static readonly byte[] re4rWW_20230323_1 = new byte[32] { 0x3C, 0x81, 0x07, 0xE9, 0x35, 0x2D, 0x0C, 0x4F, 0x39, 0x3D, 0x37, 0x50, 0xF0, 0xAC, 0x86, 0x62, 0x39, 0x1D, 0x52, 0x55, 0x9E, 0x94, 0xB5, 0x86, 0x73, 0x70, 0x50, 0xE0, 0xC5, 0x5E, 0xC3, 0x18 };
         private static readonly byte[] re4rDEMO_20230309_1 = new byte[32] { 0xBA, 0x9D, 0xC7, 0x4A, 0xC8, 0x52, 0x30, 0x62, 0x12, 0xB2, 0xDD, 0x17, 0x93, 0xA8, 0xB6, 0xFD, 0x09, 0x2A, 0x62, 0xD5, 0x03, 0xFC, 0x87, 0x30, 0x59, 0xD2, 0x62, 0x50, 0xAE, 0x73, 0x0E, 0xAC };
 
-        private static void OutputVersionString(byte[] cs)
+        private static void OutputVersionString(ILogger<SRTPluginProducerRE4R> logger, byte[] cs)
         {
-            StringBuilder sb = new StringBuilder("private static readonly byte[] re4r??_00000000 = new byte[32] { ");
+            StringBuilder sb = new StringBuilder($"private static readonly byte[] re4r??_00000000 = new byte[{cs.Length}] {{ ");
 
             for (int i = 0; i < cs.Length; i++)
             {
-                sb.AppendFormat("0x{0:X2}", cs[i]);
-
-                if (i < cs.Length - 1)
-                {
-                    sb.Append(", ");
-                }
+                sb.AppendFormat("0x{0:X2}, ", cs[i]);
             }
+            sb.Length -= 2;
+            sb.Append(" };");
 
-            sb.Append(" }");
-            Console.WriteLine("Please DM VideoGameRoulette or Squirrelies with the version.log");
-            // write output to file
             string filename = "version.log";
+            logger.LogInformation($"Please message {PluginInfo.Default.Author} with the {filename} file.");
+            // write output to file
             using (StreamWriter writer = new StreamWriter(filename))
-            {
                 writer.WriteLine(sb.ToString());
-            }
         }
 
-        public static GameVersion DetectVersion(string filePath)
+        public static GameVersion DetectVersion(ILogger<SRTPluginProducerRE4R> logger, string? filePath)
         {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                logger.LogError($"Unknown Version: string.IsNullOrWhiteSpace({nameof(filePath)}) returned true.");
+                return GameVersion.Unknown;
+            }
+
             byte[] checksum;
             using (SHA256 hashFunc = SHA256.Create())
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
                 checksum = hashFunc.ComputeHash(fs);
+
+            OutputVersionString(logger, checksum); // TESTING!!
 
             if (checksum.SequenceEqual(re4rWW_11025382))
                 return GameVersion.RE4R_WW_11025382;
@@ -60,8 +63,8 @@ namespace SRTPluginProducerRE4R
                 return GameVersion.RE4R_Demo_20230309_1;
             else
             {
-                Console.WriteLine("Unknown Version");
-                OutputVersionString(checksum);
+                logger.LogWarning("Unknown Version"); // TODO: Replace all Console., Trace., Debug. with logger.
+                OutputVersionString(logger, checksum);
                 return GameVersion.Unknown;
             }
         }

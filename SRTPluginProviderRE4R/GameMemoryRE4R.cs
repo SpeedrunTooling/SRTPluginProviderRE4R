@@ -1,7 +1,5 @@
 ﻿using SRTPluginProducerRE4R.Structs;
-using System;
-using System.Diagnostics;
-using System.Reflection;
+
 namespace SRTPluginProducerRE4R
 {
     public struct GameMemoryRE4R : IGameMemoryRE4R
@@ -10,71 +8,71 @@ namespace SRTPluginProducerRE4R
 
         public string GameName => "RE4R";
 
-        public string VersionInfo => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        public string VersionInfo => PluginInfo.Default.Version.ToString();
 
-        public bool IsInGameShopOpen { get => _isInGameShopOpen; set => _isInGameShopOpen = value; }
-        internal bool _isInGameShopOpen;
+        public bool IsInGameShopOpen { get => isInGameShopOpen; set => isInGameShopOpen = value; }
+        internal bool isInGameShopOpen;
 
-		public bool IsNewGame { get => _isNewGame; set => _isNewGame = value; }
-		internal bool _isNewGame;
+		public bool IsNewGame { get => isNewGame; set => isNewGame = value; }
+		internal bool isNewGame;
 
-		private ChapterID ChapterId { get => (ChapterID)_chapterId; set => _chapterId = (int)value; }
-        internal int _chapterId;
+		private ChapterID ChapterId { get => (ChapterID)chapterId; set => chapterId = (int)value; }
+        internal int chapterId;
 
         public string CurrentChapter => ChapterId.ToString();
 
-		public long TimerOffset { get => _timerOffset; set => _timerOffset = value; }
-		internal long _timerOffset;
+		public long TimerOffset { get => timerOffset; set => timerOffset = value; }
+		internal long timerOffset;
 		
-        public GameTimer Timer { get => _timer; set => _timer = value; }
-        internal GameTimer _timer;
+        public GameTimer? Timer { get => timer; set => timer = value; }
+        internal GameTimer? timer;
 
-        public PlayerContext PlayerContext { get => _playerContext; }
-        internal PlayerContext _playerContext;
+        public PlayerContext? PlayerContext { get => playerContext; }
+        internal PlayerContext? playerContext;
 
-        public PlayerContext[] PartnerContext { get => _partnerContext; }
-        internal PlayerContext[] _partnerContext;
+        public PlayerContext?[]? PartnerContext { get => partnerContext; }
+        internal PlayerContext?[]? partnerContext;
 
-        public int PTAS { get => _ptas; }
-        internal int _ptas;
+        public int PTAS { get => ptas; }
+        internal int ptas;
 
-        public int Spinel { get => _spinel; }
-        internal int _spinel;
+        public int Spinel { get => spinel; }
+        internal int spinel;
 
-        public int LastItem { get => _lastItem; }
-        internal int _lastItem;
+        public int LastItem { get => lastItem; }
+        internal int lastItem;
 
-        public string LastItemName { get => ((ItemID)_lastItem).ToString(); }
+        public string LastItemName { get => ((ItemID)lastItem).ToString(); }
 
-        public int InventoryCount { get => _inventoryCount; }
-        internal int _inventoryCount;
+        public int InventoryCount { get => inventoryCount; }
+        internal int inventoryCount;
 
-        public CaseSize CaseSize { get => _caseSize; }
-        internal CaseSize _caseSize;
+        public CaseSize CaseSize { get => caseSize; }
+        internal CaseSize caseSize;
 
-        public InventoryEntry[] Items { get => _items; set => _items = value; }
-        internal InventoryEntry[] _items;
+        public InventoryEntry[]? Items { get => items; set => items = value; }
+        internal InventoryEntry[]? items;
 
-        public int KeyItemCount { get => _keyItemCount; }
-        internal int _keyItemCount;
+        public int KeyItemCount { get => keyItemCount; }
+        internal int keyItemCount;
 
-        public InventoryEntry[] KeyItems { get => _keyItems; set => _keyItems = value; }
-        internal InventoryEntry[] _keyItems;
+        public InventoryEntry[]? KeyItems { get => keyItems; set => keyItems = value; }
+        internal InventoryEntry[]? keyItems;
 
-        public int TreasureItemsCount { get => _treasureItemsCount; }
-        internal int _treasureItemsCount;
+        public int TreasureItemsCount { get => treasureItemsCount; }
+        internal int treasureItemsCount;
 
-        public InventoryEntry[] TreasureItems { get => _treasureItems; set => _treasureItems = value; }
-        internal InventoryEntry[] _treasureItems;
+        public InventoryEntry[]? TreasureItems { get => treasureItems; set => treasureItems = value; }
+        internal InventoryEntry[]? treasureItems;
 
-        public int UniqueCount { get => _uniqueCount; }
-        internal int _uniqueCount;
+        public int UniqueCount { get => uniqueCount; }
+        internal int uniqueCount;
 
-        public InventoryEntry[] UniqueItems { get => _uniqueItems; set => _uniqueItems = value; }
-        internal InventoryEntry[] _uniqueItems;
+        public InventoryEntry[]? UniqueItems { get => uniqueItems; set => uniqueItems = value; }
+        internal InventoryEntry[]? uniqueItems;
 
-        public PlayerContext[] Enemies { get => _enemies; }
-        internal PlayerContext[] _enemies;
+        public PlayerContext?[]? Enemies { get => enemies; }
+        internal PlayerContext?[]? enemies;
 
         public int EnemyArraySize { get => enemyArraySize; }
         internal int enemyArraySize;

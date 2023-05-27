@@ -24,6 +24,7 @@
 
     public enum CharacterKindID : int
     {
+        Invalid = -1,
         None = 0,
         Leon = 100000,
         Ashley = 110000,
@@ -96,7 +97,6 @@
         ch8_g4z0 = 81108,
         ch7_k0z0 = 81109,
         ch5_j1z0 = 500000,
-        Invalid = -1,
     }
 
     public enum PlayerState : int

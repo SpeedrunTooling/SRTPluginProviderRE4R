@@ -1,4 +1,5 @@
-﻿using ProcessMemory;
+﻿using Microsoft.Extensions.Logging;
+using ProcessMemory;
 using SRTPluginProducerRE4R.Structs;
 using System;
 using System.Diagnostics;
@@ -8,21 +9,22 @@ namespace SRTPluginProducerRE4R
     internal class GameMemoryRE4RScanner : IDisposable
     {
         // Variables
-        private ProcessMemoryHandler memoryAccess;
+        private readonly ILogger<SRTPluginProducerRE4R> logger;
+        private ProcessMemoryHandler? memoryAccess;
 		private GameMemoryRE4R gameMemoryValues;
         private GameVersion gv = GameVersion.Unknown;
         public bool HasScanned;
         public DateTimeOffset LastPointerUpdate;
-		private readonly int MAX_ENEMIES = 32;
-		private readonly int MAX_PARTNERS = 2;
-        // private readonly int MAX_INVENTORIES = 8;
-        // private readonly int MAX_ITEMS = 50;
-        // private readonly int MAX_KEY_ITEMS = 50;
-        // private readonly int MAX_TREASURE_ITEMS = 204;
-        // private readonly int MAX_UNIQUE_ITEMS = 32;
+		private const int MAX_ENEMIES = 32;
+		private const int MAX_PARTNERS = 2;
+        // private const int MAX_INVENTORIES = 8;
+        // private const int MAX_ITEMS = 50;
+        // private const int MAX_KEY_ITEMS = 50;
+        // private const int MAX_TREASURE_ITEMS = 204;
+        // private const int MAX_UNIQUE_ITEMS = 32;
         // private int previousCount = 0;
-        public bool ProcessRunning => memoryAccess != null && memoryAccess.ProcessRunning;
-        public uint ProcessExitCode => (memoryAccess != null) ? memoryAccess.ProcessExitCode : 0;
+        public bool ProcessRunning => memoryAccess != null && (memoryAccess?.ProcessRunning ?? default);
+        public uint ProcessExitCode => (memoryAccess != null) ? memoryAccess?.ProcessExitCode ?? default : 0;
 
         // Pointer Address Variables
         private int pointerAddressCharacterManager;
@@ -36,50 +38,54 @@ namespace SRTPluginProducerRE4R
 
         // Pointer Classes
         private IntPtr BaseAddress { get; set; }
-        private MultilevelPointer PointerCharacterContext { get; set; }
-        private MultilevelPointer PointerPartnerContext { get; set; }
-        private MultilevelPointer[] PointerEnemyContext { get; set; }
-        private MultilevelPointer PointerEnemyCount { get; set; }
-        private MultilevelPointer PointerGameStatsManagerOngoingStatsChapterLapTime { get; set; }
-        private MultilevelPointer PointerGameStatsManagerOngoingStatsKillCount { get; set; }
-        private MultilevelPointer PointerGameRankManager { get; set; }
-        private MultilevelPointer PointerGameClock { get; set; }
-        private MultilevelPointer PointerInventoryManager { get; set; }
-        private MultilevelPointer InGameShopFlowController { get; set; }
-        private MultilevelPointer PointerLastItem { get; set; }
-        private MultilevelPointer PointerSpinel { get; set; }
-        private MultilevelPointer PointerCampaignManager { get; set; }
-        internal GameMemoryRE4RScanner(Process process = null)
+        private MultilevelPointer? PointerCharacterContext { get; set; }
+        private MultilevelPointer? PointerPartnerContext { get; set; }
+        private MultilevelPointer?[]? PointerEnemyContext { get; set; }
+        private MultilevelPointer? PointerEnemyCount { get; set; }
+        private MultilevelPointer? PointerGameStatsManagerOngoingStatsChapterLapTime { get; set; }
+        private MultilevelPointer? PointerGameStatsManagerOngoingStatsKillCount { get; set; }
+        private MultilevelPointer? PointerGameRankManager { get; set; }
+        private MultilevelPointer? PointerGameClock { get; set; }
+        private MultilevelPointer? PointerInventoryManager { get; set; }
+        private MultilevelPointer? InGameShopFlowController { get; set; }
+        private MultilevelPointer? PointerLastItem { get; set; }
+        private MultilevelPointer? PointerSpinel { get; set; }
+        private MultilevelPointer? PointerCampaignManager { get; set; }
+        internal GameMemoryRE4RScanner(ILogger<SRTPluginProducerRE4R> logger, Process? process = default)
         {
+            this.logger = logger;
             gameMemoryValues = new GameMemoryRE4R();
-            if (process != null)
+            if (process is not null)
                 Initialize(process);
         }
 
         internal unsafe void Initialize(Process process)
         {
-            if (process == null)
+            if (process is null)
                 return; // Do not continue if this is null.
 
-            gv = SelectPointerAddresses(GameHashes.DetectVersion(process.MainModule.FileName));
+            gv = SelectPointerAddresses(GameHashes.DetectVersion(logger, process.MainModule?.FileName ?? default));
             if (gv == GameVersion.Unknown)
                 return; // Unknown version.
 
-			int pid = GetProcessId(process).Value;
+			int? pid = GetProcessId(process);
+            if (pid is null)
+                return;
+
             memoryAccess = new ProcessMemoryHandler((uint)pid);
             if (ProcessRunning)
             {
-                BaseAddress = process?.MainModule?.BaseAddress ?? IntPtr.Zero; // Bypass .NET's managed solution for getting this and attempt to get this info ourselves via PInvoke since some users are getting 299 PARTIAL COPY when they seemingly shouldn't.
+                BaseAddress = process?.MainModule?.BaseAddress ?? default; // Bypass .NET's managed solution for getting this and attempt to get this info ourselves via PInvoke since some users are getting 299 PARTIAL COPY when they seemingly shouldn't.
 
-                gameMemoryValues._timer = new GameTimer();
-                gameMemoryValues._playerContext = new PlayerContext();
-                gameMemoryValues._partnerContext = new PlayerContext[2];
-                gameMemoryValues._enemies = new PlayerContext[32];
+                gameMemoryValues.timer = new GameTimer();
+                gameMemoryValues.playerContext = new PlayerContext();
+                gameMemoryValues.partnerContext = new PlayerContext[2];
+                gameMemoryValues.enemies = new PlayerContext[32];
                 PointerEnemyContext = new MultilevelPointer[32];
 
                 for (int i = 0; i < MAX_ENEMIES; ++i)
                 {
-                    gameMemoryValues._enemies[i] = new PlayerContext();
+                    gameMemoryValues.enemies[i] = new PlayerContext();
                     PointerEnemyContext[i] = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8, 0x40 + (i * sizeof(nuint)));
                 }
 
@@ -144,107 +150,107 @@ namespace SRTPluginProducerRE4R
             return GameVersion.Unknown;
         }
 
-        internal void UpdatePointers()
+        internal void UpdatePointers() // DONE
         {
             // Only update pointers once every n seconds.
             if ((DateTimeOffset.UtcNow - LastPointerUpdate).TotalSeconds < 5d)
                 return;
             LastPointerUpdate = DateTimeOffset.UtcNow;
 
-			InGameShopFlowController.UpdatePointers();
-            PointerEnemyCount.UpdatePointers();
-            PointerCharacterContext.UpdatePointers();
-            PointerPartnerContext.UpdatePointers();
-            PointerGameStatsManagerOngoingStatsChapterLapTime.UpdatePointers();
-            PointerGameStatsManagerOngoingStatsKillCount.UpdatePointers();
-            PointerGameRankManager.UpdatePointers();
-            PointerInventoryManager.UpdatePointers();
-            PointerLastItem.UpdatePointers();
-            PointerSpinel.UpdatePointers();
-            PointerCampaignManager.UpdatePointers();
+			InGameShopFlowController?.UpdatePointers();
+            PointerEnemyCount?.UpdatePointers();
+            PointerCharacterContext?.UpdatePointers();
+            PointerPartnerContext?.UpdatePointers();
+            PointerGameStatsManagerOngoingStatsChapterLapTime?.UpdatePointers();
+            PointerGameStatsManagerOngoingStatsKillCount?.UpdatePointers();
+            PointerGameRankManager?.UpdatePointers();
+            PointerInventoryManager?.UpdatePointers();
+            PointerLastItem?.UpdatePointers();
+            PointerSpinel?.UpdatePointers();
+            PointerCampaignManager?.UpdatePointers();
 
             for (int i = 0; i < MAX_ENEMIES; ++i)
-                PointerEnemyContext[i].UpdatePointers();
+                PointerEnemyContext?[i]?.UpdatePointers();
         }
 
-        private unsafe void UpdateGameClock()
+        private unsafe void UpdateGameClock() // DONE
         {
             // GameClock
-            var gc = PointerGameClock.Deref<GameClock>(0x0);
-            var gsd = memoryAccess.GetAt<GameClockGameSaveData>((nuint*)gc.GameSaveData);
+            var gc = PointerGameClock?.Deref<GameClock>(0x0);
+            var gsd = memoryAccess?.GetAt<GameClockGameSaveData>((nuint*)(gc?.GameSaveData ?? default));
 			if (gameMemoryValues.IsNewGame)
-				gameMemoryValues._timerOffset = gsd.GameElapsedTime - gsd.DemoSpendingTime - gsd.PauseSpendingTime;
-			gameMemoryValues._timer.SetValues(gc, gsd, gameMemoryValues._timerOffset);
-            
+				gameMemoryValues.timerOffset = (gsd?.GameElapsedTime - gsd?.DemoSpendingTime - gsd?.PauseSpendingTime) ?? 0L;
+            gameMemoryValues.timer?.SetValues(gc, gsd, gameMemoryValues.timerOffset);
 		}
 
-        private unsafe void UpdatePlayerContext()
+        private unsafe void UpdatePlayerContext() // DONE
         {
             // PlayerContext
-            var cc = PointerCharacterContext.Deref<CharacterContext>(0x0);
-            var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
-            gameMemoryValues._playerContext.SetValues(cc, hp);
+            var cc = PointerCharacterContext?.Deref<CharacterContext>(0x0);
+            var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
+            gameMemoryValues.playerContext?.SetValues(cc, hp);
             // PartnerContext
-            var li = PointerPartnerContext.Deref<ListStruct>(0x0);
+            var li = PointerPartnerContext?.Deref<ListStruct>(0x0);
             for (var i = 0; i < MAX_PARTNERS; i++)
             {
-                if (gameMemoryValues._partnerContext[i] == null)
-                    gameMemoryValues._partnerContext[i] = new PlayerContext();
+                if (gameMemoryValues.partnerContext is not null && gameMemoryValues.partnerContext?[i] is null)
+                    gameMemoryValues.partnerContext![i] = new PlayerContext();
 
-                if (i >= li.Count)
+                if (i >= (li?.Count ?? 0))
                 {
-                    gameMemoryValues._partnerContext[i] = default;
+                    if (gameMemoryValues.partnerContext is not null)
+                        gameMemoryValues.partnerContext![i] = default;
                     continue;
                 }
                 var position = (i * 0x8) + 0x20;
-                var characterSlot = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(li.Items, position));
-                var pc = memoryAccess.GetAt<CharacterContext>(characterSlot);
-                var pchp = memoryAccess.GetAt<HitPoint>((nuint*)pc.HitPoints);
-                gameMemoryValues._partnerContext[i].SetValues(pc, pchp);
+                var characterSlot = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(li?.Items ?? default, position)) ?? 0L);
+                var pc = memoryAccess?.GetAt<CharacterContext>(characterSlot);
+                var pchp = memoryAccess?.GetAt<HitPoint>((nuint*)(pc?.HitPoints ?? default));
+                gameMemoryValues.partnerContext?[i]?.SetValues(pc, pchp);
             }
-            // var pc = PointerPartnerContext.Deref<CharacterContext>(0x0);
-            // var pchp = memoryAccess.GetAt<HitPoint>((nuint*)pc.HitPoints);
+            // var pc = PointerPartnerContext?.Deref<CharacterContext>(0x0);
+            // var pchp = memoryAccess?.GetAt<HitPoint>((nuint*)pc.HitPoints);
             // gameMemoryValues._partnerContext.SetValues(pc, pchp);
         }
 
-        private unsafe void UpdateEnemyContext()
+        private unsafe void UpdateEnemyContext() // DONE
         {
-            gameMemoryValues.enemyArraySize = PointerEnemyCount.DerefInt(0x3C);
+            gameMemoryValues.enemyArraySize = PointerEnemyCount?.DerefInt(0x3C) ?? default;
             // EnemyContext
             for (int i = 0; i < MAX_ENEMIES; ++i)
             {
                 if (i >= gameMemoryValues.enemyArraySize)
                 {
-                    gameMemoryValues._enemies[i].SetValues(default, default);
+                    gameMemoryValues.enemies?[i]?.SetValues(default, default);
 					continue;
                 }
-                var cc = PointerEnemyContext[i].Deref<CharacterContext>(0x0);
-                var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
-                gameMemoryValues._enemies[i].SetValues(cc, hp);
+                var cc = PointerEnemyContext?[i]?.Deref<CharacterContext>(0x0);
+                var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
+                gameMemoryValues.enemies?[i]?.SetValues(cc, hp);
             }
         }
 
-        private unsafe void UpdateInventory(Group group, CharacterKindID kindId, long* Controller)
+        private unsafe void UpdateInventory(Group? group, CharacterKindID? kindId, long* Controller)
         {
             if (group == Group.Case)
             {
-                var csic = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0xA0));
-                var csi = memoryAccess.GetAt<CsInventory>(csic);
-                var ii = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(csi.InventoryItems, 0x10));
+                var csic = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0xA0)) ?? default);
+                var csi = memoryAccess?.GetAt<CsInventory>(csic);
+                var ii = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(csi?.InventoryItems ?? default, 0x10)) ?? default);
                 
                 if (kindId == CharacterKindID.Leon)
                 {
-                    gameMemoryValues._caseSize.SetValues(csi.CurrRowSize, csi.CurrColumnSize);
-                    gameMemoryValues._inventoryCount = memoryAccess.GetIntAt((nuint*)IntPtr.Add(csi.InventoryItems, 0x18));
-                    gameMemoryValues._items = new InventoryEntry[gameMemoryValues._inventoryCount > 0 ? gameMemoryValues._inventoryCount : 0];
-                    for (var i = 0; i < gameMemoryValues._inventoryCount; i++)
+                    gameMemoryValues.caseSize.SetValues(csi?.CurrRowSize ?? default, csi?.CurrColumnSize ?? default);
+                    gameMemoryValues.inventoryCount = memoryAccess?.GetIntAt((nuint*)IntPtr.Add(csi?.InventoryItems ?? default, 0x18)) ?? default;
+                    gameMemoryValues.items = new InventoryEntry[gameMemoryValues.inventoryCount > 0 ? gameMemoryValues.inventoryCount : 0];
+                    for (var i = 0; i < gameMemoryValues.inventoryCount; i++)
                     {
                         var position = (i * 0x8) + 0x20;
-                        var csii = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)ii, position));
-                        var iib = memoryAccess.GetAt<InventoryItemBase>(csii);
-                        var _item = memoryAccess.GetAt<Item>((nuint*)iib.Item);
-                        var itemDef = memoryAccess.GetAt<ItemDefinition>((nuint*)_item.ItemDefine);
-                        gameMemoryValues._items[i].SetValues(_item, iib, itemDef);
+                        var csii = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)ii, position)) ?? default);
+                        var iib = memoryAccess?.GetAt<InventoryItemBase>(csii);
+                        var item = memoryAccess?.GetAt<Item>((nuint*)(iib?.Item ?? default));
+                        var itemDef = memoryAccess?.GetAt<ItemDefinition>((nuint*)(item?.ItemDefine ?? default));
+                        gameMemoryValues.items[i].SetValues(item, iib, itemDef);
                     }
                     return;
                 }
@@ -253,19 +259,19 @@ namespace SRTPluginProducerRE4R
             else if (group == Group.KeyItems)
             {
                 // Console.WriteLine($"KeyItems: {Controller.ToString("X8")}");
-                var kiic = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0x98));
-                var kii = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)kiic, 0x20));
-                var li = memoryAccess.GetAt<ListStruct>(kii);
-                gameMemoryValues._keyItemCount = li.Count;
-                gameMemoryValues._keyItems = new InventoryEntry[gameMemoryValues._keyItemCount > 0 ? gameMemoryValues._keyItemCount : 0];
-                for (var i = 0; i < gameMemoryValues._keyItemCount; i++)
+                var kiic = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0x98)) ?? default);
+                var kii = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)kiic, 0x20)) ?? default);
+                var li = memoryAccess?.GetAt<ListStruct>(kii);
+                gameMemoryValues.keyItemCount = li?.Count ?? default;
+                gameMemoryValues.keyItems = new InventoryEntry[gameMemoryValues.keyItemCount > 0 ? gameMemoryValues.keyItemCount : 0];
+                for (var i = 0; i < gameMemoryValues.keyItemCount; i++)
                 {
                     var position = (i * 0x8) + 0x20;
-                    var itemSlot = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(li.Items, position));
-                    var iib = memoryAccess.GetAt<InventoryItemBase>(itemSlot);
-                    var _item = memoryAccess.GetAt<Item>((nuint*)iib.Item);
-                    var itemDef = memoryAccess.GetAt<ItemDefinition>((nuint*)_item.ItemDefine);
-                    gameMemoryValues._keyItems[i].SetValues(_item, iib, itemDef);
+                    var itemSlot = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(li?.Items ?? default, position)) ?? default);
+                    var iib = memoryAccess?.GetAt<InventoryItemBase>(itemSlot);
+                    var item = memoryAccess?.GetAt<Item>((nuint*)(iib?.Item ?? default));
+                    var itemDef = memoryAccess?.GetAt<ItemDefinition>((nuint*)(item?.ItemDefine ?? default));
+                    gameMemoryValues.keyItems[i].SetValues(item, iib, itemDef);
                 }
                 // Console.WriteLine($"KeyItems Count: {test.Count}");
                 return;
@@ -273,21 +279,21 @@ namespace SRTPluginProducerRE4R
             else if (group == Group.Treasure)
             {
                 // Console.WriteLine($"Treasure: {Controller.ToString("X8")}");
-                var tic = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0x98));
-                var ti = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)tic, 0x28));
-                var li = memoryAccess.GetAt<ListStruct>(ti);
+                var tic = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0x98)) ?? default);
+                var ti = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)tic, 0x28)) ?? default);
+                var li = memoryAccess?.GetAt<ListStruct>(ti);
                 if (kindId == CharacterKindID.Leon)
                 {
-                    gameMemoryValues._treasureItemsCount = li.Count;
-                    gameMemoryValues._treasureItems = new InventoryEntry[gameMemoryValues._treasureItemsCount > 0 ? gameMemoryValues._treasureItemsCount : 0];
-                    for (var i = 0; i < gameMemoryValues._treasureItemsCount; i++)
+                    gameMemoryValues.treasureItemsCount = li?.Count ?? default;
+                    gameMemoryValues.treasureItems = new InventoryEntry[gameMemoryValues.treasureItemsCount > 0 ? gameMemoryValues.treasureItemsCount : 0];
+                    for (var i = 0; i < gameMemoryValues.treasureItemsCount; i++)
                     {
                         var position = (i * 0x8) + 0x20;
-                        var itemSlot = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(li.Items, position));
-                        var iib = memoryAccess.GetAt<InventoryItemBase>(itemSlot);
-                        var _item = memoryAccess.GetAt<Item>((nuint*)iib.Item);
-                        var itemDef = memoryAccess.GetAt<ItemDefinition>((nuint*)_item.ItemDefine);
-                        gameMemoryValues._treasureItems[i].SetValues(_item, iib, itemDef);
+                        var itemSlot = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(li?.Items ?? default, position)) ?? default);
+                        var iib = memoryAccess?.GetAt<InventoryItemBase>(itemSlot);
+                        var item = memoryAccess?.GetAt<Item>((nuint*)(iib?.Item ?? default));
+                        var itemDef = memoryAccess?.GetAt<ItemDefinition>((nuint*)(item?.ItemDefine ?? default));
+                        gameMemoryValues.treasureItems[i].SetValues(item, iib, itemDef);
                     }
                     return;
                 } 
@@ -296,19 +302,19 @@ namespace SRTPluginProducerRE4R
             else if (group == Group.Unique)
             {
                 // Console.WriteLine($"Unique: {Controller.ToString("X8")}");
-                var uic = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0xA0));
-                var ui = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)uic, 0x20));
-                var li = memoryAccess.GetAt<ListStruct>(ui);
-                gameMemoryValues._uniqueCount = li.Count;
-                gameMemoryValues._uniqueItems = new InventoryEntry[gameMemoryValues._uniqueCount > 0 ? gameMemoryValues._uniqueCount : 0];
-                for (var i = 0; i < gameMemoryValues._uniqueCount; i++)
+                var uic = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)Controller, 0xA0)) ?? default);
+                var ui = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)uic, 0x20)) ?? default);
+                var li = memoryAccess?.GetAt<ListStruct>(ui);
+                gameMemoryValues.uniqueCount = li?.Count ?? default;
+                gameMemoryValues.uniqueItems = new InventoryEntry[gameMemoryValues.uniqueCount > 0 ? gameMemoryValues.uniqueCount : 0];
+                for (var i = 0; i < gameMemoryValues.uniqueCount; i++)
                 {
                     var position = (i * 0x8) + 0x20;
-                    var itemSlot = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(li.Items, position));
-                    var iib = memoryAccess.GetAt<InventoryItemBase>(itemSlot);
-                    var _item = memoryAccess.GetAt<Item>((nuint*)iib.Item);
-                    var itemDef = memoryAccess.GetAt<ItemDefinition>((nuint*)_item.ItemDefine);
-                    gameMemoryValues._uniqueItems[i].SetValues(_item, iib, itemDef);
+                    var itemSlot = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(li?.Items ?? default, position)) ?? default);
+                    var iib = memoryAccess?.GetAt<InventoryItemBase>(itemSlot);
+                    var item = memoryAccess?.GetAt<Item>((nuint*)(iib?.Item ?? default));
+                    var itemDef = memoryAccess?.GetAt<ItemDefinition>((nuint*)(item?.ItemDefine ?? default));
+                    gameMemoryValues.uniqueItems[i].SetValues(item, iib, itemDef);
                 }
                 // Console.WriteLine($"Unique Count: {test.Count}");
                 return;
@@ -317,21 +323,21 @@ namespace SRTPluginProducerRE4R
 
         private unsafe void UpdateInventoryManager()
         {
-            var im = PointerInventoryManager.Deref<InventoryManager>(0x0);
-            gameMemoryValues._ptas = im.CurrPTAS;
-            var ct = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(im.ControllerTable, 0x18));
-            var entriesCount = memoryAccess.GetIntAt((nuint*)IntPtr.Add(im.ControllerTable, 0x20));
-            // var entriesFreeCount = memoryAccess.GetIntAt((nuint*)IntPtr.Add(im.ControllerTable, 0x24));
-            for (var i = 0; i < entriesCount; i++)
+            var im = PointerInventoryManager?.Deref<InventoryManager>(0x0);
+            gameMemoryValues.ptas = im?.CurrPTAS ?? default;
+            var ct = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(im?.ControllerTable ?? default, 0x18)) ?? default);
+            var entriesCount = memoryAccess?.GetIntAt((nuint*)IntPtr.Add(im?.ControllerTable ?? default, 0x20));
+            // var entriesFreeCount = memoryAccess?.GetIntAt((nuint*)IntPtr.Add(im.ControllerTable, 0x24));
+            for (var i = 0; i < (entriesCount ?? default); i++)
             {
                 var positionKey = (i * 0x18) + 0x28;
                 var positionValue = (i * 0x18) + 0x30;
-                var cidAddress = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)ct, positionKey));
-                var cid = memoryAccess.GetAt<ContextID>(cidAddress);
-                var icbAddress = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)ct, positionValue));
-                var ccAddress = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add((IntPtr)icbAddress, 0x58));
-                var cc = memoryAccess.GetAt<CharacterContext>(ccAddress);
-                UpdateInventory((Group)cid.Group, cc.KindID, icbAddress);
+                var cidAddress = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)ct, positionKey)) ?? 0L);
+                var cid = memoryAccess?.GetAt<ContextID>(cidAddress);
+                var icbAddress = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)ct, positionValue)) ?? default);
+                var ccAddress = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add((IntPtr)icbAddress, 0x58)) ?? default);
+                var cc = memoryAccess?.GetAt<CharacterContext>(ccAddress);
+                UpdateInventory((Group?)cid?.Group, cc?.KindID, icbAddress);
                 // Console.WriteLine($"Test Log InventoryControllerBase {i}: {ccAddress.ToString("X8")}");
             }
         }
@@ -340,25 +346,25 @@ namespace SRTPluginProducerRE4R
         {
             UpdatePointers();
 
-			gameMemoryValues._isInGameShopOpen = InGameShopFlowController.DerefInt(0x50) != 0;
-            gameMemoryValues._chapterId = PointerCampaignManager.DerefInt(0x30);
-			gameMemoryValues._isNewGame = PointerCampaignManager.DerefByte(0x48) != 0;
-			gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8);
-            gameMemoryValues._spinel = PointerSpinel.DerefInt(0x20);
+			gameMemoryValues.isInGameShopOpen = InGameShopFlowController?.DerefInt(0x50) != 0;
+            gameMemoryValues.chapterId = PointerCampaignManager?.DerefInt(0x30) ?? default;
+			gameMemoryValues.isNewGame = (PointerCampaignManager?.DerefByte(0x48) ?? default) != 0;
+			gameMemoryValues.lastItem = PointerLastItem?.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8) ?? default;
+            gameMemoryValues.spinel = PointerSpinel?.DerefInt(0x20) ?? default;
             UpdatePlayerContext();
             UpdateInventoryManager();
             UpdateGameClock();
             UpdateEnemyContext();
-            gameMemoryValues.rank = PointerGameRankManager.Deref<GameRankSystem>(0);
-            gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStatsChapterLapTime.Deref<GameStatsChapterLapTimeElement>(0);
-            gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount.Deref<GameStatsKillCountElement>(0);
-            // gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
-            // gameMemoryValues.gameSaveData = PointerGameClockGameSaveData.Deref<GameSaveData>(0);
-			HasScanned = true;
+            gameMemoryValues.rank = PointerGameRankManager?.Deref<GameRankSystem>(0) ?? default;
+            gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStatsChapterLapTime?.Deref<GameStatsChapterLapTimeElement>(0) ?? default;
+            gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount?.Deref<GameStatsKillCountElement>(0) ?? default;
+            // gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData?.Deref<SystemSaveData>(0) ?? default;
+            // gameMemoryValues.gameSaveData = PointerGameClockGameSaveData?.Deref<GameSaveData>(0) ?? default;
+            HasScanned = true;
             return gameMemoryValues;
         }
 
-        private int? GetProcessId(Process process) => process?.Id;
+        private int? GetProcessId(Process? process) => process?.Id;
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -371,7 +377,7 @@ namespace SRTPluginProducerRE4R
                 {
                     // TODO: dispose managed state (managed objects).
                     if (memoryAccess != null)
-                        memoryAccess.Dispose();
+                        memoryAccess?.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

@@ -11,7 +11,13 @@
 	[Parameter]
 	public PluginConfiguration Configuration { get; set; }
 
-	private List<string> FontList { get; set; } = new List<string>()
+	public Config() : this(new PluginConfiguration()) { }
+    public Config(PluginConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    private List<string> FontList { get; set; } = new List<string>()
 	{	
 		"Arial",
 		"Arial Black",
@@ -64,9 +70,9 @@
 
 		if (response.IsSuccessStatusCode)
 		{
-			var json = await response.Content.ReadAsStringAsync();
+			var json = await (response?.Content?.ReadAsStringAsync() ?? Task.FromResult(string.Empty));
 			FontList.Clear();
-			FontList = JsonSerializer.Deserialize<List<string>>(json);
+			FontList = JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
 		}
 	}
 
