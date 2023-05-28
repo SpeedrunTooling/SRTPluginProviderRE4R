@@ -3,7 +3,7 @@ using System;
 
 namespace SRTPluginProducerRE4R
 {
-    internal class PluginInfo : PluginInfoBase, IPluginInfo
+	public class PluginInfo : PluginInfoBase, IPluginInfo
     {
         public override string Name => "Game Memory Producer (Resident Evil 4 (2023))";
 
@@ -22,7 +22,7 @@ namespace SRTPluginProducerRE4R
         public override int VersionRevision => Version.Revision;
 
 #pragma warning disable IDE1006 // Naming Styles
-        internal static PluginInfo Default = new PluginInfo();
+        public static PluginInfo Default = new PluginInfo();
 #pragma warning restore IDE1006 // Naming Styles
     }
 }
