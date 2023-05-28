@@ -188,7 +188,7 @@ namespace SRTPluginProducerRE4R
             // PlayerContext
             var cc = PointerCharacterContext?.Deref<CharacterContext>(0x0);
             var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
-            gameMemoryValues.playerContext?.SetValues(cc, hp, PointerCharacterContext?.Address ?? 0L);
+            gameMemoryValues.playerContext?.SetValues(cc, hp, PointerCharacterContext?.Address ?? default);
             // PartnerContext
             var li = PointerPartnerContext?.Deref<ListStruct>(0x0);
             for (var i = 0; i < MAX_PARTNERS; i++)
@@ -221,12 +221,12 @@ namespace SRTPluginProducerRE4R
             {
                 if (i >= gameMemoryValues.enemyArraySize)
                 {
-                    gameMemoryValues.enemies?[i]?.SetValues(default, default);
+                    gameMemoryValues.enemies?[i]?.SetValues(default, default, default);
 					continue;
                 }
                 var cc = PointerEnemyContext?[i]?.Deref<CharacterContext>(0x0);
                 var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
-                gameMemoryValues.enemies?[i]?.SetValues(cc, hp, PointerEnemyContext?[i]?.Address ?? 0L);
+                gameMemoryValues.enemies?[i]?.SetValues(cc, hp, PointerEnemyContext?[i]?.Address ?? default);
             }
         }
 
