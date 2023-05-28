@@ -8,11 +8,13 @@ namespace SRTPluginProviderRE4R.Structs
 {
     public class PlayerContext
     {
+        private long address;
         private int kindID;
         private Vec3 position;
         private Quat rotation;
         private HitPoint health;
 
+        public long Address { get => address; set => address = value; }
         public CharacterKindID KindID { get => (CharacterKindID)kindID; set => kindID = (int)value; }
         public string SurvivorTypeString => KindID.ToString();
         public Vec3 Position { get => position; set => position = value; }
@@ -39,9 +41,10 @@ namespace SRTPluginProviderRE4R.Structs
             Rotation = new Quat(0, 0, 0, 0);
         }
 
-        public void SetValues(CharacterContext cc, HitPoint hp)
+        public void SetValues(CharacterContext cc, HitPoint hp, long address)
         {
-            KindID = cc.KindID;
+            Address = address;
+			KindID = cc.KindID;
             Position.Update(cc.X, cc.Y, cc.Z);
             Rotation.Update(cc.RW, cc.RX, cc.RY, cc.RZ);
             Health = hp;

@@ -174,7 +174,7 @@ namespace SRTPluginProviderRE4R
             // PlayerContext
             var cc = PointerCharacterContext.Deref<CharacterContext>(0x0);
             var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
-            gameMemoryValues._playerContext.SetValues(cc, hp);
+            gameMemoryValues._playerContext.SetValues(cc, hp, PointerCharacterContext.Address);
             // PartnerContext
             var li = PointerPartnerContext.Deref<ListStruct>(0x0);
             for (var i = 0; i < MAX_PARTNERS; i++)
@@ -191,7 +191,7 @@ namespace SRTPluginProviderRE4R
                 var characterSlot = (long*)memoryAccess.GetLongAt((nuint*)IntPtr.Add(li.Items, position));
                 var pc = memoryAccess.GetAt<CharacterContext>(characterSlot);
                 var pchp = memoryAccess.GetAt<HitPoint>((nuint*)pc.HitPoints);
-                gameMemoryValues._partnerContext[i].SetValues(pc, pchp);
+                gameMemoryValues._partnerContext[i].SetValues(pc, pchp, (long)characterSlot);
             }
             // var pc = PointerPartnerContext.Deref<CharacterContext>(0x0);
             // var pchp = memoryAccess.GetAt<HitPoint>((nuint*)pc.HitPoints);
@@ -204,9 +204,9 @@ namespace SRTPluginProviderRE4R
             // EnemyContext
             for (int i = 0; i < gameMemoryValues.enemyArraySize; ++i)
             {
-                var cc = PointerEnemyContext[i].Deref<CharacterContext>(0x0);
+				var cc = PointerEnemyContext[i].Deref<CharacterContext>(0x0);
                 var hp = memoryAccess.GetAt<HitPoint>((nuint*)cc.HitPoints);
-                gameMemoryValues._enemies[i].SetValues(cc, hp);
+                gameMemoryValues._enemies[i].SetValues(cc, hp, PointerEnemyContext[i].Address);
             }
         }
 
