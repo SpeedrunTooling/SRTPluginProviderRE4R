@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginProviderRE4R", "SRTPluginProviderRE4R\SRTPluginProviderRE4R.csproj", "{F60B024A-E3AD-47E8-9056-6A86B3732B95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginBase", "..\SRTHost\SRTPluginBase\SRTPluginBase.csproj", "{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginBase", "..\..\SpeedRunTool\SRTHost\SRTPluginBase\SRTPluginBase.csproj", "{9E476474-DE8B-4662-9576-F149E2F822A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,14 @@ Global
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|Any CPU.Build.0 = Release|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|x64.ActiveCfg = Release|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|x64.Build.0 = Release|x64
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Debug|x64.Build.0 = Debug|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Release|x64.ActiveCfg = Release|Any CPU
-		{27C4AFA8-DD0B-4BCC-B5F1-37B5461C59BB}.Release|x64.Build.0 = Release|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E476474-DE8B-4662-9576-F149E2F822A1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
