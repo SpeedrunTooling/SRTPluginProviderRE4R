@@ -32,7 +32,7 @@ namespace SRTPluginProducerRE4R
             sb.Append(" };");
 
             string filename = "version.log";
-            logger.LogInformation($"Please message {PluginInfo.Default.Author} with the {filename} file.");
+            logger.LogInformation($"Please message {new PluginInfo().Author} with the {filename} file.");
             // write output to file
             using (StreamWriter writer = new StreamWriter(filename))
                 writer.WriteLine(sb.ToString());

@@ -8,7 +8,7 @@ namespace SRTPluginProducerRE4R
 
         public string GameName => "RE4R";
 
-        public string VersionInfo => PluginInfo.Default.Version.ToString();
+        public string VersionInfo => new PluginInfo().Version.ToString();
 
         public bool IsInGameShopOpen { get => isInGameShopOpen; set => isInGameShopOpen = value; }
         internal bool isInGameShopOpen;

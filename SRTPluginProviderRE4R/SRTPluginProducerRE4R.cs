@@ -16,7 +16,7 @@ namespace SRTPluginProducerRE4R
         private readonly IPluginHost pluginHost;
 
 		// Properties
-		public override IPluginInfo Info => PluginInfo.Default;
+		public override IPluginInfo Info => new PluginInfo();
 
         // Fields
         private GameMemoryRE4RScanner? gameMemoryScanner;
