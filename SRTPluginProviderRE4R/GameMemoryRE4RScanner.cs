@@ -188,7 +188,7 @@ namespace SRTPluginProducerRE4R
             // PlayerContext
             var cc = PointerCharacterContext?.Deref<CharacterContext>(0x0);
             var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
-            gameMemoryValues.playerContext?.SetValues(cc, hp);
+            gameMemoryValues.playerContext?.SetValues(cc, hp, PointerCharacterContext?.Address ?? 0L);
             // PartnerContext
             var li = PointerPartnerContext?.Deref<ListStruct>(0x0);
             for (var i = 0; i < MAX_PARTNERS; i++)
@@ -206,7 +206,7 @@ namespace SRTPluginProducerRE4R
                 var characterSlot = (long*)(memoryAccess?.GetLongAt((nuint*)IntPtr.Add(li?.Items ?? default, position)) ?? 0L);
                 var pc = memoryAccess?.GetAt<CharacterContext>(characterSlot);
                 var pchp = memoryAccess?.GetAt<HitPoint>((nuint*)(pc?.HitPoints ?? default));
-                gameMemoryValues.partnerContext?[i]?.SetValues(pc, pchp);
+                gameMemoryValues.partnerContext?[i]?.SetValues(pc, pchp, (long)characterSlot);
             }
             // var pc = PointerPartnerContext?.Deref<CharacterContext>(0x0);
             // var pchp = memoryAccess?.GetAt<HitPoint>((nuint*)pc.HitPoints);
@@ -226,7 +226,7 @@ namespace SRTPluginProducerRE4R
                 }
                 var cc = PointerEnemyContext?[i]?.Deref<CharacterContext>(0x0);
                 var hp = memoryAccess?.GetAt<HitPoint>((nuint*)(cc?.HitPoints ?? default));
-                gameMemoryValues.enemies?[i]?.SetValues(cc, hp);
+                gameMemoryValues.enemies?[i]?.SetValues(cc, hp, PointerEnemyContext?[i]?.Address ?? 0L);
             }
         }
 
