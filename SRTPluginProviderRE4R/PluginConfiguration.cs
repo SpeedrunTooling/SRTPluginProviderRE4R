@@ -1,4 +1,5 @@
 ﻿using SRTPluginBase;
+using SRTPluginProducerRE4R.Structs;
 
 namespace SRTPluginProducerRE4R
 {
@@ -28,7 +29,11 @@ namespace SRTPluginProducerRE4R
 		public float ScalingFactor { get; set; }
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
-		public float EnemyHPPositionX { get; set; }
+        public int PlayerHPType { get; set; }
+        public int PlayerHPPosition { get; set; }
+        public float PlayerHPPositionX { get; set; }
+        public float PlayerHPPositionY { get; set; }
+        public float EnemyHPPositionX { get; set; }
 		public float EnemyHPPositionY { get; set; }
 
 		// public float InventoryPositionX { get; set; }
@@ -46,7 +51,6 @@ namespace SRTPluginProducerRE4R
 			HideUIPause = true;
 			HideUIInShop = true;
 			ShowIGT = true;
-			CenterPlayerHP = true;
 			CenterBossHP = true;
 			ShowDuffle = true;
 			ShowHPBars = true;
@@ -62,10 +66,14 @@ namespace SRTPluginProducerRE4R
 			ScalingFactor = 1f;
 			PositionX = 5f;
 			PositionY = 50f;
-			EnemyHPPositionX = -1;
-			EnemyHPPositionY = -1;
-			// InventoryPositionX = -1;
-			// InventoryPositionY = -1;
+			PlayerHPType = 0;
+			PlayerHPPosition = 0;
+            PlayerHPPositionX = -1f;
+            PlayerHPPositionY = -1f;
+            EnemyHPPositionX = -1f;
+			EnemyHPPositionY = -1f;
+			// InventoryPositionX = -1f;
+			// InventoryPositionY = -1f;
 			StringFontName = "Courier New";
 		}
 	}

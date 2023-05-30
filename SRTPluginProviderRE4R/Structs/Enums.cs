@@ -1,5 +1,19 @@
 ﻿namespace SRTPluginProducerRE4R.Structs
 {
+    public enum HPType
+    {
+        Text,
+        Bar,
+    }
+
+    public enum HPPosition
+    {
+        Left,
+        Center,
+        Right,
+        Custom,
+    }
+
     public enum ChapterID
     {
         None = 0,
