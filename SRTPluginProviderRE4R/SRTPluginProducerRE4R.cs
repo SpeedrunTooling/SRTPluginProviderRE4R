@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Drawing.Text;
+using System;
 
 namespace SRTPluginProducerRE4R
 {
@@ -28,14 +29,17 @@ namespace SRTPluginProducerRE4R
 
 			Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
             gameMemoryScanner = new GameMemoryRE4RScanner(logger, gameProc);
-            Configuration = DbLoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
+            Configuration = LoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 
-			// Register pages.
-			registeredPages.Add("MainHUD", (Controller controller) => Task.FromResult<IActionResult>(controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8))); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
+            // Register pages.
+            registeredPages.Add("MainHUD", (Controller controller) => Task.FromResult<IActionResult>(controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8))); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
 			registeredPages.Add("Config", (Controller controller) =>
             {
-				if (controller.Request.Query.ContainsKey("Config"))
+                if (controller.Request.Query.ContainsKey("Config"))
+                {
                     Configuration = JsonSerializer.Deserialize<PluginConfiguration>(controller.Request.Query["Config"]!);
+                    SaveConfiguration((Configuration as PluginConfiguration)!.ModelToConfigDictionary());
+                }
 				return Task.FromResult<IActionResult>(controller.View("Config", Configuration as PluginConfiguration));
             });
 			registeredPages.Add(("AvailableFonts", true), (Controller controller) => Task.FromResult<IActionResult>(controller.Content(JsonSerializer.Serialize(new InstalledFontCollection().Families.Select(a => a.Name)), "application/json", Encoding.UTF8)));
@@ -43,13 +47,14 @@ namespace SRTPluginProducerRE4R
 
         public object? Refresh() => gameMemoryScanner?.Refresh();
 
-		public override void Dispose()
+        public override void Dispose()
         {
             gameMemoryScanner?.Dispose();
             gameMemoryScanner = default;
-            if (Configuration is not null && Configuration is PluginConfiguration pluginConfiguration)
-                DbSaveConfiguration(pluginConfiguration.ModelToConfigDictionary());
-		}
+            if (Configuration is not null)
+                SaveConfiguration((Configuration as PluginConfiguration)!.ModelToConfigDictionary());
+
+        }
         public override async ValueTask DisposeAsync()
         {
             Dispose();
