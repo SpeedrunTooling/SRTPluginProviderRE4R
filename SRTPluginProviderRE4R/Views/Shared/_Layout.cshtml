@@ -10,11 +10,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | RE4R</title>
     <base href="~/" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="css/site.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    backgroundImage: {
+                        main: "url('/images/background.jpeg')",
+                    }
+                }
+            }
+        }
+    </script>
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
-<body class="w-full h-screen bg-zinc-900 text-white">
+<body class="absolute w-full h-full bg-main bg-center bg-cover text-white flex flex-col">
+    <header class="md:container mx-auto w-full flex justify-between items-center bg-black p-4">
+        <div class="text-xl font-bold text-center">RE4R @ViewData["Title"]</div>
+        <a class="flex justify-center items-center gap-2 bg-red-500 hover:bg-red-300 p-2 rounded-md" href="/">
+            <span class="sm:block hidden">
+                Return Home
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+            </svg>
+        </a>
+    </header>
     <div class="mx-auto sm:container w-full h-full">
         <main class="w-full h-full flex flex-col sm:justify-center items-center" role="main">
             @RenderBody()
