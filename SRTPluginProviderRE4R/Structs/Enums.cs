@@ -6,7 +6,13 @@
         Bar,
     }
 
-    public enum HPPosition
+	public enum BossPosition
+	{
+		Default,
+		Center,
+	}
+
+	public enum HPPosition
     {
         Left,
         Center,

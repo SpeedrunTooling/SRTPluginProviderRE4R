@@ -77,12 +77,12 @@
 }
 
 <div class="w-full sm:h-auto h-full flex flex-col text-sm">
-	<div class="w-full flex flex-col gap-2 p-4">
+	<div class="w-full flex flex-col gap-2 px-4">
 		<div class="w-full h-auto flex flex-col gap-2 rounded-md justify-center rounded-md bg-zinc-700">
-			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Debug Settings</h1>
+			<h1 class="w-full md:text-left text-center font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Debug Settings</h1>
 			<div class="w-full grid md:grid-cols-3 grid-cols-2 px-4 pb-4 gap-2">
 				<label>
-					<input type="checkbox" @bind="Configuration.Debug" /> Show Debug Timer Info
+					<input type="checkbox" @bind="Configuration.Debug" /> Show Debug Info
 				</label>
 
 				<label>
@@ -106,7 +106,7 @@
 				</label>
 
 				<label>
-					<input type="checkbox" @bind="Configuration.ShowIGT" /> Show In Game Timer
+					<input type="checkbox" @bind="Configuration.ShowIGT" /> Show IGT
 				</label>
 
 				<label>
@@ -132,7 +132,7 @@
 		</div>
 
 		<div class="w-full h-auto flex flex-col gap-2 rounded-md bg-zinc-700">
-			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Font Settings</h1>
+			<h1 class="w-full md:text-left text-center font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Font Settings</h1>
 			<div class="w-full grid grid-cols-4 gap-2 px-4 pb-4">
 				<label class="col-span-1 flex flex-col">
 					Font Size
@@ -158,15 +158,15 @@
 		</div>
 
 		<div class="w-full h-auto gap-2 rounded-md bg-zinc-700">
-			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Scale and Position Offset Settings</h1>
-			<div class="w-full grid grid-cols-2 gap-2 px-4 pb-4">
-				<label class="flex flex-col">
+			<h1 class="w-full md:text-left text-center font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">Scale and Position Offset Settings</h1>
+			<div class="w-full grid grid-cols-3 gap-2 px-4 pb-4">
+				<label class="hidden flex flex-col">
 					UI Size Scale Multiplier
 					<input class="text-black p-2 rounded-md" type="number" min="0.01" max="4.00" step="0.01" @bind="Configuration.ScalingFactor" />
 				</label>
 
 				<label class="flex flex-col">
-					Enemy Render Limit
+					Enemies Limit
 					<input class="text-black p-2 rounded-md" type="number" min="-1" max="32" step="1" @bind="Configuration.EnemyLimit" />
 				</label>
 
@@ -183,22 +183,26 @@
 		</div>
 
 		<div class="w-full h-auto flex flex-col gap-2 rounded-md bg-zinc-700">
-			<h1 class="w-full md:text-left text-center text-lg font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">HP Bar Settings</h1>
+			<h1 class="w-full md:text-left text-center font-bold border-b p-2 text-red-400 bg-zinc-900 rounded-tl-md rounded-tr-md">HP Bar Settings</h1>
 			<div class="col-span-6 grid grid-cols-6 px-4 pb-4 gap-2">
 				<label class="col-span-6">
 					<input type="checkbox" @bind="Configuration.ShowHPBars" /> Show HP
 				</label>
 
-				<label class="col-span-2">
-					<input type="checkbox" @bind="Configuration.ShowDamagedEnemiesOnly" /> Show Damaged Only
+				<label class="col-span-3">
+					<input type="checkbox" @bind="Configuration.ShowDamagedEnemiesOnly" /> Damaged Only
 				</label>
 
-				<label class="col-span-2">
-					<input type="checkbox" @bind="Configuration.ShowBossOnly" /> Show Boss Only
+				<label class="col-span-3">
+					<input type="checkbox" @bind="Configuration.ShowBossOnly" /> Boss Only
 				</label>
 
-				<label class="col-span-2">
-					<input type="checkbox" @bind="Configuration.CenterBossHP" /> Center Boss HP
+				<label class="col-span-6 flex flex-col">
+					Boss HP Position
+					<select class="h-full text-black p-2 rounded-md" @bind="Configuration.BossHPPosition">
+						<option value="0" selected="@(Configuration.BossHPPosition == 0)">Default</option>
+						<option value="1" selected="@(Configuration.BossHPPosition == 1)">Center</option>
+					</select>
 				</label>
 
 				<label class="col-span-3 flex flex-col">
@@ -242,6 +246,14 @@
 		</div>
 
 		<button class="w-full bg-green-800 hover:bg-green-700 p-4 rounded-md" @onclick="SaveConfig">Save Configuration</button>
+
+
+		<footer class="w-full">
+			<div class="w-full flex items-center justify-center sm:text-sm text-xs sm:py-2 pt-6 pb-8">
+				© 2023 VideoGameRoulette. All Rights Reserved.
+			</div>
+		</footer>
+
 	</div>
 </div>
 

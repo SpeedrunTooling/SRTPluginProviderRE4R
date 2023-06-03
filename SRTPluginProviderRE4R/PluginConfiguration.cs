@@ -12,8 +12,6 @@ namespace SRTPluginProducerRE4R
 		public bool HideUIInventory { get; set; }
 		public bool HideUIPause { get; set; }
 		public bool HideUIInShop { get; set; }
-		public bool CenterPlayerHP { get; set; }
-		public bool CenterBossHP { get; set; }
 		public bool ShowIGT { get; set; }
 		public bool ShowHPBars { get; set; }
 		public bool ShowDuffle { get; set; }
@@ -31,7 +29,8 @@ namespace SRTPluginProducerRE4R
 		public float PositionY { get; set; }
         public int PlayerHPType { get; set; }
         public int PlayerHPPosition { get; set; }
-        public float PlayerHPPositionX { get; set; }
+		public int BossHPPosition { get; set; }
+		public float PlayerHPPositionX { get; set; }
         public float PlayerHPPositionY { get; set; }
         public float EnemyHPPositionX { get; set; }
 		public float EnemyHPPositionY { get; set; }
@@ -51,7 +50,6 @@ namespace SRTPluginProducerRE4R
 			HideUIPause = true;
 			HideUIInShop = true;
 			ShowIGT = true;
-			CenterBossHP = true;
 			ShowDuffle = true;
 			ShowHPBars = true;
 			EnemyLimit = -1;
@@ -68,7 +66,8 @@ namespace SRTPluginProducerRE4R
 			PositionY = 50f;
 			PlayerHPType = 0;
 			PlayerHPPosition = 0;
-            PlayerHPPositionX = -1f;
+			BossHPPosition = 0;
+			PlayerHPPositionX = -1f;
             PlayerHPPositionY = -1f;
             EnemyHPPositionX = -1f;
 			EnemyHPPositionY = -1f;
