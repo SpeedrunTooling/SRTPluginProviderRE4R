@@ -7,20 +7,40 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginProducerRE4R", "SR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginBase", "..\..\SpeedRunTool\SRTPluginBase\src\SRTPluginBase\SRTPluginBase.csproj", "{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SRTPluginHelper", "..\..\SpeedRunTool\SRTPluginHelper\src\SRTPluginHelper\SRTPluginHelper.csproj", "{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Debug|Any CPU.Build.0 = Debug|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Debug|x64.ActiveCfg = Debug|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Debug|x64.Build.0 = Debug|x64
+		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|Any CPU.ActiveCfg = Release|x64
+		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|Any CPU.Build.0 = Release|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|x64.ActiveCfg = Release|x64
 		{F60B024A-E3AD-47E8-9056-6A86B3732B95}.Release|x64.Build.0 = Release|x64
+		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Debug|x64.Build.0 = Debug|Any CPU
+		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Release|Any CPU.Build.0 = Release|Any CPU
 		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Release|x64.ActiveCfg = Release|Any CPU
 		{83BDA2DB-4069-4BA2-B70E-C7E09DAEA393}.Release|x64.Build.0 = Release|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C560FC0-17FE-4DE8-BAFE-59B9DF10DC74}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

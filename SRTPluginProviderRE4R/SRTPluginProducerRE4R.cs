@@ -30,7 +30,7 @@ namespace SRTPluginProducerRE4R
             this.pluginHost = pluginHost;
 
 			Process? gameProc = Process.GetProcessesByName("re4")?.FirstOrDefault();
-            gameMemoryScanner = new GameMemoryRE4RScanner(logger, gameProc);
+            gameMemoryScanner = new GameMemoryRE4RScanner(this, gameProc);
             Configuration = LoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 
             // Register pages.

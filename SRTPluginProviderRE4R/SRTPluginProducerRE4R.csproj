@@ -23,7 +23,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
 		<PackageReference Include="ProcessMemory64" Version="4.0.*-*" />
-		<PackageReference Include="SRTPluginHelper" Version="1.0.*-*" />
+		
 	</ItemGroup>
 	
 	<Choose>
@@ -33,11 +33,19 @@
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</ProjectReference>
+				<ProjectReference Include="..\..\..\SpeedRunTool\SRTPluginHelper\src\SRTPluginHelper\SRTPluginHelper.csproj">
+					<Private>false</Private>
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</ProjectReference>
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
 				<PackageReference Include="SRTPluginBase" Version="4.0.*-*">
+					<Private>false</Private>
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+				<PackageReference Include="SRTPluginHelper" Version="1.0.0-alpha.20230605031008">
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
@@ -81,7 +89,7 @@
 
 	<ItemGroup>
 	  <None Update="Pages\RE4R.html">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 

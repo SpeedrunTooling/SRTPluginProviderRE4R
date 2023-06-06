@@ -4,6 +4,9 @@ using SRTPluginProducerRE4R.Structs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SRTPluginHelper;
+using System.Security.Cryptography;
+using SRTPluginBase;
 
 namespace SRTPluginProducerRE4R
 {
@@ -69,12 +72,15 @@ namespace SRTPluginProducerRE4R
 			}
 		};
 
-		internal GameMemoryRE4RScanner(ILogger<SRTPluginProducerRE4R> logger, Process? process = default)
+		internal GameMemoryRE4RScanner(SRTPluginProducerRE4R ipp, Process? process = default)
         {
-            this.logger = logger;
+            this.logger = (ILogger<SRTPluginProducerRE4R>?)ipp.Logger;
             gameMemoryValues = new GameMemoryRE4R();
             if (process is not null)
+            {
+                gv = SelectPointerAddresses(SRTPluginHelper.Version.DetectVersion<SRTPluginProducerRE4R, SHA256, GameVersion>(ipp, process.MainModule?.FileName ?? default, supportedVersions));
                 Initialize(process);
+            }
         }
 
         internal unsafe void Initialize(Process process)
@@ -82,7 +88,8 @@ namespace SRTPluginProducerRE4R
             if (process is null)
                 return; // Do not continue if this is null.
 
-            gv = SelectPointerAddresses(GameHashes.DetectVersion(logger, process.MainModule?.FileName ?? default, supportedVersions));
+            //gv = SelectPointerAddresses(GameHashes.DetectVersion(logger, process.MainModule?.FileName ?? default, supportedVersions));
+            
             if (gv == GameVersion.Unknown)
                 return; // Unknown version.
 
