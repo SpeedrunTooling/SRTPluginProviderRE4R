@@ -1,5 +1,4 @@
 ﻿using SRTPluginBase;
-using SRTPluginProducerRE4R.Structs;
 
 namespace SRTPluginProducerRE4R
 {
