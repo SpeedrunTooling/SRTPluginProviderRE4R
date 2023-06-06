@@ -45,7 +45,7 @@
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
-				<PackageReference Include="SRTPluginHelper" Version="1.0.0-alpha.20230605031008">
+				<PackageReference Include="SRTPluginHelper" Version="1.0.*-*">
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
