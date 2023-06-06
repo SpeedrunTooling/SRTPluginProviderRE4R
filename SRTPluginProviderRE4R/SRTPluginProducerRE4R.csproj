@@ -33,10 +33,7 @@
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</ProjectReference>
-				<ProjectReference Include="..\..\..\SpeedRunTool\SRTPluginHelper\src\SRTPluginHelper\SRTPluginHelper.csproj">
-					<Private>false</Private>
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</ProjectReference>
+				<ProjectReference Include="..\..\..\SpeedRunTool\SRTPluginHelper\src\SRTPluginHelper\SRTPluginHelper.csproj" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -45,10 +42,7 @@
 					<Private>false</Private>
 					<ExcludeAssets>runtime</ExcludeAssets>
 				</PackageReference>
-				<PackageReference Include="SRTPluginHelper" Version="1.0.*-*">
-					<Private>false</Private>
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</PackageReference>
+				<PackageReference Include="SRTPluginHelper" Version="1.0.*-*" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>

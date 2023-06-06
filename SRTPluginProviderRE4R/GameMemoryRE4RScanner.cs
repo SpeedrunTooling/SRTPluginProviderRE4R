@@ -13,7 +13,7 @@ namespace SRTPluginProducerRE4R
     internal class GameMemoryRE4RScanner : IDisposable
     {
         // Variables
-        private readonly ILogger<SRTPluginProducerRE4R> logger;
+        private readonly ILogger logger;
         private ProcessMemoryHandler? memoryAccess;
 		private GameMemoryRE4R gameMemoryValues;
         private GameVersion gv = GameVersion.Unknown;
@@ -72,13 +72,13 @@ namespace SRTPluginProducerRE4R
 			}
 		};
 
-		internal GameMemoryRE4RScanner(SRTPluginProducerRE4R ipp, Process? process = default)
+		internal GameMemoryRE4RScanner(SRTPluginProducerRE4R pluginProducer, Process? process = default)
         {
-            this.logger = (ILogger<SRTPluginProducerRE4R>?)ipp.Logger;
+            this.logger = pluginProducer.Logger;
             gameMemoryValues = new GameMemoryRE4R();
             if (process is not null)
             {
-                gv = SelectPointerAddresses(SRTPluginHelper.Version.DetectVersion<SRTPluginProducerRE4R, SHA256, GameVersion>(ipp, process.MainModule?.FileName ?? default, supportedVersions));
+                gv = SelectPointerAddresses(SRTPluginHelper.Version.DetectVersion<SRTPluginProducerRE4R, SHA256, GameVersion>(pluginProducer, process.MainModule?.FileName ?? default, supportedVersions));
                 Initialize(process);
             }
         }
@@ -146,7 +146,7 @@ namespace SRTPluginProducerRE4R
                         pointerAddressInGameShopManager = 0x0D249D18;
                         pointerAddressHighwayGuiManager = 0x0D260470;
                         pointerAddressCampaignManager = 0x0D259508;
-                        Console.WriteLine("Version: RE4R_WW_11025382");
+
                         return GameVersion.RE4R_WW_11025382;
                     }
                 case GameVersion.RE4R_WW_20230407_1:
@@ -159,19 +159,18 @@ namespace SRTPluginProducerRE4R
                         pointerAddressInGameShopManager = 0x0D21A0D8;
                         pointerAddressHighwayGuiManager = 0x0D22B240;
                         pointerAddressCampaignManager = 0x0D23DCE0;
-                        Console.WriteLine("Version: RE4R_WW_20230407_1");
+
                         return GameVersion.RE4R_WW_20230407_1;
                     }
 
                 case GameVersion.RE4R_WW_20230323_1:
                     {
-                        Console.WriteLine("Version: RE4R_WW_20230323_1 - No longer supported due to structure changes.");
+                        logger.LogWarning("Version: RE4R_WW_20230323_1 - No longer supported due to structure changes.");
                         return GameVersion.RE4R_WW_20230323_1; // No longer supported due to structure changes.
                     }
             }
 
             // If we made it this far... rest in pepperonis. We have failed to detect any of the correct versions we support and have no idea what pointer addresses to use. Bail out.
-            Console.WriteLine("Version: Unknown");
             return GameVersion.Unknown;
         }
 
