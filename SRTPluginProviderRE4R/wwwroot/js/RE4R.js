@@ -120,17 +120,18 @@ function DrawAlignedTextBlocks(labels, vals, colors, alignment, hideParam) {
 //	GET HP BAR AND TEXT COLOR ACCORDING TO PLAYER HEALTH STATE
 //	</summary>
 function GetColor(player) {
-	if (player.currentHealthState == "Gassed") return ["gassed", "pink"];
-	if (player.currentHealthState == "Poisoned") return ["poison", "purple"];
-	if (player.currentHealthState == "Fine") return ["fine", "green"];
-	else if (player.currentHealthState == "FineToo") return ["fineToo", "yellow"];
-	else if (player.currentHealthState == "Caution") return ["caution", "orange"];
-	else if (player.currentHealthState == "Danger") return ["danger", "red"];
+	if (player.CurrentHealthState == "Gassed") return ["gassed", "pink"];
+	if (player.CurrentHealthState == "Poisoned") return ["poison", "purple"];
+	if (player.CurrentHealthState == "Fine") return ["fine", "green"];
+	else if (player.CurrentHealthState == "FineToo") return ["fineToo", "yellow"];
+	else if (player.CurrentHealthState == "Caution") return ["caution", "orange"];
+	else if (player.CurrentHealthState == "Danger") return ["danger", "red"];
 	return ["dead", "grey"];
 }
 
 // UPDATES UI WITH DATA FROM SERVER
 function appendData(data) {
+	// console.log("JSON Data: ", data);
 	var mainContainer = document.getElementById("srtQueryData");
 	mainContainer.innerHTML = "";
 	DrawUI(data);
@@ -142,21 +143,21 @@ function DrawUI(data) {
 	// DrawTextBlock("IGT", data.Timer.IGTFormattedString, ["white", "green2"], false);
 
 	// GETS COLOR FOR HP BAR ACCORDING TO PLAYERS HEALTH STATE
-	let _colors = GetColor(data.playerContext);
+	let _colors = GetColor(data.PlayerContext);
 	// DRAWS PLAYER HP IF MAX HP IS GREATER THAN OR EQUAL TO 1200
-	if (data.playerContext.health.maxHP >= 1200) {
-		DrawProgressBar(data.playerContext.health.currentHP, data.playerContext.health.maxHP, data.playerContext.health.percentage, data.playerContext.survivorTypeString, _colors);
+	if (data.PlayerContext.IsLoaded && data.PlayerContext.Health.MaxHP != 0) {
+		DrawProgressBar(data.PlayerContext.Health.CurrentHP, data.PlayerContext.Health.MaxHP, data.PlayerContext.Health.Percentage, data.PlayerContext.SurvivorTypeString, _colors);
 	}
 	// DRAWS DA RANK AND SCORE
-	DrawTextBlocks(["Rank", "ActionPoint", "ItemPoint", "Kills"], [data.rank.rank, data.rank.actionPoint, data.rank.itemPoint, data.gameStatsKillCountElement.count], ["white", "green2"], false);
+	DrawTextBlocks(["Rank", "ActionPoint", "ItemPoint", "Kills"], [data.Rank.Rank, data.Rank.ActionPoint, data.Rank.ItemPoint, data.GameStatsKillCountElement.Count], ["white", "green2"], false);
 
 	// FILTERS ENEMIES FOR ENEMIES THAT ARE ALIVE
-	var filterdEnemies = data.enemies.filter(m => { return (m.health.IsAlive && !m.IsAnimal && !m.IsIgnored) });
+	var filterdEnemies = data.Enemies.filter(m => { return (m.Health.IsAlive && !m.IsAnimal && !m.IsIgnored) });
 
 	// DRAWS ALL ENEMIES TO SCREEN
 	filterdEnemies.sort(function (a, b) {
-		return Asc(a.health.currentHP, b.health.currentHP) || Desc(a.health.currentHP, b.health.currentHP);
+		return Asc(a.Health.CurrentHP, b.Health.CurrentHP) || Desc(a.Health.CurrentHP, b.Health.CurrentHP);
 	}).forEach(function (item, index, arr) {
-		DrawProgressBar(item.health.currentHP, item.health.maxHP, item.health.percentage, item.survivorTypeString, ["danger", "red"]);
+		DrawProgressBar(item.Health.CurrentHP, item.Health.MaxHP, item.Health.Percentage, item.SurvivorTypeString, ["danger", "red"]);
 	});
 }
