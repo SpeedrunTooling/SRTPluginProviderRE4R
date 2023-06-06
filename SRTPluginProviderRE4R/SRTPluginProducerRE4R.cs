@@ -19,6 +19,8 @@ namespace SRTPluginProducerRE4R
 		// Properties
 		public override IPluginInfo Info => new PluginInfo();
 
+        public override ILogger Logger => logger;
+
         // Fields
         private GameMemoryRE4RScanner? gameMemoryScanner;
 
