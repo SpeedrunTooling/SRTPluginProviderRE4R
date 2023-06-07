@@ -34,6 +34,8 @@ namespace SRTPluginProducerRE4R
             Configuration = LoadConfiguration().ConfigDictionaryToModel<PluginConfiguration>();
 
             // Register pages.
+            // registeredPages.Add("StatsHUD", (Controller controller) => Task.FromResult<IActionResult>(new RedirectResult("https://srt.videogameroulette.ca/widgets/RE4R/json"))); // External Link
+            // registeredPages.Add("InventoryHUD", (Controller controller) => Task.FromResult<IActionResult>(new RedirectResult("https://srt.videogameroulette.ca/widgets/RE4R/inventory"))); // External Link
             registeredPages.Add("MainHUD", (Controller controller) => Task.FromResult<IActionResult>(controller.Content(Properties.Resources.RE4R, "text/html", Encoding.UTF8))); // GET: /api/v1/Plugin/SRTPluginProducerRE4R/MainHUD
 			registeredPages.Add("Config", (Controller controller) =>
             {
