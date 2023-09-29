@@ -102,9 +102,23 @@ namespace SRTPluginProviderRE4R
 
         private GameVersion SelectPointerAddresses(GameVersion version)
         {
+            Console.WriteLine($"Version: {version}");
+
             switch (version)
             {
-                case GameVersion.RE4R_WW_11025382:
+                case GameVersion.RE4R_WW_20230921_1:
+                    {
+                        pointerAddressCharacterManager = 0x0DBC2900;
+                        pointerAddressGameStatsManager = 0x0DBBDA10;
+                        pointerAddressGameRankManager = 0x0DBC2A00;
+                        pointerAddressGameClock = 0x0DBC53A0;
+                        pointerAddressInventoryManager = 0x0DBC2AD0;
+                        pointerAddressInGameShopManager = 0x0DBC2AB8;
+                        pointerAddressHighwayGuiManager = 0x0DBC2AA0;
+                        pointerAddressCampaignManager = 0x0DBC2848;
+                        break;
+                    }
+                case GameVersion.RE4R_WW_20230424_1:
                     {
                         pointerAddressCharacterManager = 0x0D261E60;
                         pointerAddressGameStatsManager = 0x0D2603F0;
@@ -114,8 +128,7 @@ namespace SRTPluginProviderRE4R
                         pointerAddressInGameShopManager = 0x0D249D18;
                         pointerAddressHighwayGuiManager = 0x0D260470;
                         pointerAddressCampaignManager = 0x0D259508;
-                        Console.WriteLine("Version: RE4R_WW_11025382");
-                        return GameVersion.RE4R_WW_11025382;
+                        break;
                     }
                 case GameVersion.RE4R_WW_20230407_1:
                     {
@@ -127,20 +140,17 @@ namespace SRTPluginProviderRE4R
                         pointerAddressInGameShopManager = 0x0D21A0D8;
                         pointerAddressHighwayGuiManager = 0x0D22B240;
                         pointerAddressCampaignManager = 0x0D23DCE0;
-                        Console.WriteLine("Version: RE4R_WW_20230407_1");
-                        return GameVersion.RE4R_WW_20230407_1;
+                        break;
                     }
 
                 case GameVersion.RE4R_WW_20230323_1:
                     {
-                        Console.WriteLine("Version: RE4R_WW_20230323_1 - No longer supported due to structure changes.");
-                        return GameVersion.RE4R_WW_20230323_1; // No longer supported due to structure changes.
+                        Console.WriteLine("Version no longer supported due to structure changes.");
+                        break; // No longer supported due to structure changes.
                     }
             }
 
-            // If we made it this far... rest in pepperonis. We have failed to detect any of the correct versions we support and have no idea what pointer addresses to use. Bail out.
-            Console.WriteLine("Version: Unknown");
-            return GameVersion.Unknown;
+            return version;
         }
 
         internal void UpdatePointers()
@@ -326,7 +336,7 @@ namespace SRTPluginProviderRE4R
         {
             gameMemoryValues._isInGameShopOpen = PointerInGameShopManager.DerefInt(0x50) != 0;
             gameMemoryValues._chapterId = PointerCampaignManager.DerefInt(0x30);
-            gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_11025382 ? 0xF0 : 0xE8);
+            gameMemoryValues._lastItem = PointerLastItem.DerefInt(gv == GameVersion.RE4R_WW_20230424_1 ? 0xF0 : 0xE8);
             gameMemoryValues._spinel = PointerSpinel.DerefInt(0x20);
             UpdatePlayerContext();
             UpdateInventoryManager();
