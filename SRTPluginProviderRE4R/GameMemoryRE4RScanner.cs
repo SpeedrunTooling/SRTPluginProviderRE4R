@@ -106,6 +106,18 @@ namespace SRTPluginProviderRE4R
 
             switch (version)
             {
+                case GameVersion.RE4R_WW_20231002_1:
+                    {
+                        pointerAddressCharacterManager = 0x0DBB88C0;
+                        pointerAddressGameStatsManager = 0x0DBB39D0;
+                        pointerAddressGameRankManager = 0x0DBB89C0;
+                        pointerAddressGameClock = 0x0DBBB360;
+                        pointerAddressInventoryManager = 0x0DBB8A90;
+                        pointerAddressInGameShopManager = 0x0DBB8A78;
+                        pointerAddressHighwayGuiManager = 0x0DBB8A60;
+                        pointerAddressCampaignManager = 0x0DBB8808;
+                        break;
+                    }
                 case GameVersion.RE4R_WW_20230921_1:
                     {
                         pointerAddressCharacterManager = 0x0DBC2900;
