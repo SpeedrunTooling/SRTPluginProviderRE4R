@@ -10,8 +10,8 @@
     <Copyright>Copyright © 2023 $(Authors)</Copyright>
     <Product>Resident Evil 4 (2023) Memory Producer Plugin</Product>
     <Description>A producer plugin for the SRT Host to provide memory values to other plugins.</Description>
-    <Version>1.0.2.0</Version>
-    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.3</Version>
+    <FileVersion>1.0.3</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <DebugType>embedded</DebugType>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
