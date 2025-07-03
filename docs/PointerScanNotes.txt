@@ -1,0 +1,5 @@
+REFramework
+search for singletons matching pointer name
+grab address of the `.Instance` variable
+search that address in CE
+there should be two results with RE4.exe+<hex offset>, use either one.

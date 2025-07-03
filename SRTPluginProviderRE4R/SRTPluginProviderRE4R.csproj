@@ -7,14 +7,14 @@
     <Platforms>x64</Platforms>
     <Authors>TheDementedSalad, Squirrelies, VideoGameRoulette</Authors>
     <Company>$(Authors)</Company>
-    <Copyright>Copyright © 2023 $(Authors)</Copyright>
+    <Copyright>Copyright © 2025 $(Authors)</Copyright>
     <Product>Resident Evil 4 (2023) Memory Producer Plugin</Product>
     <Description>A producer plugin for the SRT Host to provide memory values to other plugins.</Description>
-    <Version>1.0.3</Version>
-    <FileVersion>1.0.3</FileVersion>
+    <Version>1.0.4</Version>
+    <FileVersion>1.0.4</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <DebugType>embedded</DebugType>
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- netcoreapp3.1 had to be hardcoded here because this project reports $(TargetFramework) as netstandard2.0 (rightfully so) and I am not sure how this project's csproj can auto-detect another project's framework version to copy it to the appropriate folder so we're just... hardcoding this. -->
 	<CopyDestionationPath>$(SolutionDir)..\..\SpeedRunTool\SRTHost\SRTHost\bin\$(Configuration)\net5.0-windows\plugins</CopyDestionationPath>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
