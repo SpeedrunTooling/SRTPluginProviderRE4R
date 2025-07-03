@@ -25,7 +25,7 @@ namespace SRTPluginProviderRE4R
         // Pointer Address Variables
         private int pointerAddressCharacterManager;
         private int pointerAddressGameStatsManager;
-        private int pointerAddressGameRankManager;
+        private int pointerAddressGameRankSystem;
         private int pointerAddressGameClock;
         private int pointerAddressInventoryManager;
         private int pointerAddressInGameShopManager;
@@ -40,7 +40,7 @@ namespace SRTPluginProviderRE4R
         private MultilevelPointer PointerEnemyCount { get; set; }
         private MultilevelPointer PointerGameStatsManagerOngoingStatsChapterLapTime { get; set; }
         private MultilevelPointer PointerGameStatsManagerOngoingStatsKillCount { get; set; }
-        private MultilevelPointer PointerGameRankManager { get; set; }
+        private MultilevelPointer PointerGameRankSystem { get; set; }
         private MultilevelPointer PointerGameClock { get; set; }
         private MultilevelPointer PointerInventoryManager { get; set; }
         private MultilevelPointer PointerInGameShopManager { get; set; }
@@ -88,7 +88,7 @@ namespace SRTPluginProviderRE4R
                 PointerPartnerContext = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0x98);
                 PointerGameStatsManagerOngoingStatsChapterLapTime = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x10);
                 PointerGameStatsManagerOngoingStatsKillCount = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameStatsManager), 0x20, 0x18);
-                PointerGameRankManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameRankManager));
+                PointerGameRankSystem = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameRankSystem));
                 PointerGameClock = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressGameClock));
                 PointerInventoryManager = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressInventoryManager));
                 PointerEnemyCount = new MultilevelPointer(memoryAccess, (nint*)IntPtr.Add(BaseAddress, pointerAddressCharacterManager), 0xA8);
@@ -106,11 +106,23 @@ namespace SRTPluginProviderRE4R
 
             switch (version)
             {
+                case GameVersion.RE4R_WW_20250304_1:
+                    {
+                        pointerAddressCharacterManager = 0x0DBA8800; //     or DBF27E8?
+                        pointerAddressGameStatsManager = 0x0DBA3910; //     or DBA8920?
+                        pointerAddressGameRankSystem = 0x0DBA8900; //       or DBF2030?
+                        pointerAddressGameClock = 0x0DBAB2A0; //            or DBED7D8? for share.GameClock? Otherwise for chainsaw.ChainsawGameClock... DBA87E8 or DBAD2F8
+                        pointerAddressInventoryManager = 0x0DBA89D0; //     or DBDA360?
+                        pointerAddressInGameShopManager = 0x0DBA89B8; //    or DBAF8E8?
+                        pointerAddressHighwayGuiManager = 0x0DBA89A0; //    or DBED058?
+                        pointerAddressCampaignManager = 0x0DBA8748; //      or DBE9038?
+                        break;
+                    }
                 case GameVersion.RE4R_WW_20231002_1:
                     {
                         pointerAddressCharacterManager = 0x0DBB88C0;
                         pointerAddressGameStatsManager = 0x0DBB39D0;
-                        pointerAddressGameRankManager = 0x0DBB89C0;
+                        pointerAddressGameRankSystem = 0x0DBB89C0;
                         pointerAddressGameClock = 0x0DBBB360;
                         pointerAddressInventoryManager = 0x0DBB8A90;
                         pointerAddressInGameShopManager = 0x0DBB8A78;
@@ -122,7 +134,7 @@ namespace SRTPluginProviderRE4R
                     {
                         pointerAddressCharacterManager = 0x0DBC2900;
                         pointerAddressGameStatsManager = 0x0DBBDA10;
-                        pointerAddressGameRankManager = 0x0DBC2A00;
+                        pointerAddressGameRankSystem = 0x0DBC2A00;
                         pointerAddressGameClock = 0x0DBC53A0;
                         pointerAddressInventoryManager = 0x0DBC2AD0;
                         pointerAddressInGameShopManager = 0x0DBC2AB8;
@@ -134,7 +146,7 @@ namespace SRTPluginProviderRE4R
                     {
                         pointerAddressCharacterManager = 0x0D261E60;
                         pointerAddressGameStatsManager = 0x0D2603F0;
-                        pointerAddressGameRankManager = 0x0D292A68;
+                        pointerAddressGameRankSystem = 0x0D292A68;
                         pointerAddressGameClock = 0x0D262890;
                         pointerAddressInventoryManager = 0x0D249848;
                         pointerAddressInGameShopManager = 0x0D249D18;
@@ -146,7 +158,7 @@ namespace SRTPluginProviderRE4R
                     {
                         pointerAddressCharacterManager = 0x0D22B0A0;
                         pointerAddressGameStatsManager = 0x0D217780;
-                        pointerAddressGameRankManager = 0x0D22B1A0;
+                        pointerAddressGameRankSystem = 0x0D22B1A0;
                         pointerAddressGameClock = 0x0D22D7D0;
                         pointerAddressInventoryManager = 0x0D219D08;
                         pointerAddressInGameShopManager = 0x0D21A0D8;
@@ -173,7 +185,7 @@ namespace SRTPluginProviderRE4R
             PointerPartnerContext.UpdatePointers();
             PointerGameStatsManagerOngoingStatsChapterLapTime.UpdatePointers();
             PointerGameStatsManagerOngoingStatsKillCount.UpdatePointers();
-            PointerGameRankManager.UpdatePointers();
+            PointerGameRankSystem.UpdatePointers();
             PointerInventoryManager.UpdatePointers();
             PointerLastItem.UpdatePointers();
             PointerSpinel.UpdatePointers();
@@ -354,7 +366,7 @@ namespace SRTPluginProviderRE4R
             UpdateInventoryManager();
             UpdateGameClock();
             UpdateEnemyContext();
-            gameMemoryValues.rank = PointerGameRankManager.Deref<GameRankSystem>(0);
+            gameMemoryValues.rank = PointerGameRankSystem.Deref<GameRankSystem>(0);
             gameMemoryValues.gameStatsChapterLapTimeElement = PointerGameStatsManagerOngoingStatsChapterLapTime.Deref<GameStatsChapterLapTimeElement>(0);
             gameMemoryValues.gameStatsKillCountElement = PointerGameStatsManagerOngoingStatsKillCount.Deref<GameStatsKillCountElement>(0);
             // gameMemoryValues.systemSaveData = PointerGameClockSystemSaveData.Deref<SystemSaveData>(0);
