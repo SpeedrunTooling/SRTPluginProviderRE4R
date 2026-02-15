@@ -23,14 +23,14 @@ namespace SRTPluginProviderRE4R
         public uint ProcessExitCode => (memoryAccess != null) ? memoryAccess.ProcessExitCode : 0;
 
         // Pointer Address Variables
-        private int pointerAddressCharacterManager;
-        private int pointerAddressGameStatsManager;
-        private int pointerAddressGameRankSystem;
-        private int pointerAddressGameClock;
-        private int pointerAddressInventoryManager;
-        private int pointerAddressInGameShopManager;
-        private int pointerAddressHighwayGuiManager;
         private int pointerAddressCampaignManager;
+        private int pointerAddressCharacterManager;
+        private int pointerAddressGameRankSystem;
+        private int pointerAddressGameStatsManager;
+        private int pointerAddressHighwayGuiManager;
+        private int pointerAddressInGameShopManager;
+        private int pointerAddressInventoryManager;
+        private int pointerAddressGameClock;
 
         // Pointer Classes
         private IntPtr BaseAddress { get; set; }
@@ -106,16 +106,30 @@ namespace SRTPluginProviderRE4R
 
             switch (version)
             {
+                case GameVersion.RE4R_WW_20260203_1:
+                default:
+                    {
+                        pointerAddressCampaignManager = 0x0DA8D308; // chainsaw.CampaignManager
+                        pointerAddressCharacterManager  = 0x0DA8D3C0; // chainsaw.CharacterManager
+                        pointerAddressGameRankSystem = 0x0DA8D4C0; // chainsaw.GameRankSystem
+                        pointerAddressGameStatsManager  = 0x0DA55FB8; // chainsaw.GameStatsManager
+                        pointerAddressHighwayGuiManager = 0x0DA8D560; // chainsaw.HighwayGuiManager
+                        pointerAddressInGameShopManager = 0x0DA620F8; // chainsaw.InGameShopManager
+                        pointerAddressInventoryManager  = 0x0DA8CDD0; // chainsaw.InventoryManager                        
+                        pointerAddressGameClock = 0x0DA8F0A0; // share.GameClock
+
+                        break;
+                    }
                 case GameVersion.RE4R_WW_20250304_1:
                     {
-                        pointerAddressCharacterManager = 0x0DBA8800; //     or DBF27E8?
-                        pointerAddressGameStatsManager = 0x0DBA3910; //     or DBA8920?
-                        pointerAddressGameRankSystem = 0x0DBA8900; //       or DBF2030?
-                        pointerAddressGameClock = 0x0DBAB2A0; //            or DBED7D8? for share.GameClock? Otherwise for chainsaw.ChainsawGameClock... DBA87E8 or DBAD2F8
-                        pointerAddressInventoryManager = 0x0DBA89D0; //     or DBDA360?
-                        pointerAddressInGameShopManager = 0x0DBA89B8; //    or DBAF8E8?
-                        pointerAddressHighwayGuiManager = 0x0DBA89A0; //    or DBED058?
-                        pointerAddressCampaignManager = 0x0DBA8748; //      or DBE9038?
+                        pointerAddressCharacterManager = 0x0DBA8800;
+                        pointerAddressGameStatsManager = 0x0DBA3910;
+                        pointerAddressGameRankSystem = 0x0DBA8900;
+                        pointerAddressGameClock = 0x0DBAB2A0;
+                        pointerAddressInventoryManager = 0x0DBA89D0;
+                        pointerAddressInGameShopManager = 0x0DBA89B8;
+                        pointerAddressHighwayGuiManager = 0x0DBA89A0;
+                        pointerAddressCampaignManager = 0x0DBA8748;
                         break;
                     }
                 case GameVersion.RE4R_WW_20231002_1:
