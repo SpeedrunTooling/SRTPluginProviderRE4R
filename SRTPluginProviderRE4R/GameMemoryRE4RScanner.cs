@@ -106,16 +106,29 @@ namespace SRTPluginProviderRE4R
 
             switch (version)
             {
-                case GameVersion.RE4R_WW_20260203_1:
+                case GameVersion.RE4R_WW_20260303_1:
                 default:
                     {
                         pointerAddressCampaignManager = 0x0DA8D308; // chainsaw.CampaignManager
-                        pointerAddressCharacterManager  = 0x0DA8D3C0; // chainsaw.CharacterManager
+                        pointerAddressCharacterManager = 0x0DA8D3C0; // chainsaw.CharacterManager
                         pointerAddressGameRankSystem = 0x0DA8D4C0; // chainsaw.GameRankSystem
-                        pointerAddressGameStatsManager  = 0x0DA55FB8; // chainsaw.GameStatsManager
+                        pointerAddressGameStatsManager = 0x0DA55FB8; // chainsaw.GameStatsManager
                         pointerAddressHighwayGuiManager = 0x0DA8D560; // chainsaw.HighwayGuiManager
                         pointerAddressInGameShopManager = 0x0DA620F8; // chainsaw.InGameShopManager
-                        pointerAddressInventoryManager  = 0x0DA8CDD0; // chainsaw.InventoryManager                        
+                        pointerAddressInventoryManager = 0x0DA8CDD0; // chainsaw.InventoryManager                        
+                        pointerAddressGameClock = 0x0DA8F0A0; // share.GameClock
+
+                        break;
+                    }
+                case GameVersion.RE4R_WW_20260203_1:
+                    {
+                        pointerAddressCampaignManager = 0x0DA8D308; // chainsaw.CampaignManager
+                        pointerAddressCharacterManager = 0x0DA8D3C0; // chainsaw.CharacterManager
+                        pointerAddressGameRankSystem = 0x0DA8D4C0; // chainsaw.GameRankSystem
+                        pointerAddressGameStatsManager = 0x0DA55FB8; // chainsaw.GameStatsManager
+                        pointerAddressHighwayGuiManager = 0x0DA8D560; // chainsaw.HighwayGuiManager
+                        pointerAddressInGameShopManager = 0x0DA620F8; // chainsaw.InGameShopManager
+                        pointerAddressInventoryManager = 0x0DA8CDD0; // chainsaw.InventoryManager                        
                         pointerAddressGameClock = 0x0DA8F0A0; // share.GameClock
 
                         break;

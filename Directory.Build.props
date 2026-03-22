@@ -36,7 +36,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="ProcessMemory64" Version="4.0.*-*" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
