@@ -106,8 +106,21 @@ namespace SRTPluginProviderRE4R
 
             switch (version)
             {
-                case GameVersion.RE4R_WW_20260303_1:
+                case GameVersion.RE4R_WW_20260331_1:
                 default:
+                    {
+                        pointerAddressCampaignManager = 0x0D66E6E8; // chainsaw.CampaignManager
+                        pointerAddressCharacterManager = 0x0D66E7A0; // chainsaw.CharacterManager
+                        pointerAddressGameRankSystem = 0x0D66E8A0; // chainsaw.GameRankSystem
+                        pointerAddressGameStatsManager = 0x0D637398; // chainsaw.GameStatsManager
+                        pointerAddressHighwayGuiManager = 0x0D66E940; // chainsaw.HighwayGuiManager
+                        pointerAddressInGameShopManager = 0x0D6434D0; // chainsaw.InGameShopManager
+                        pointerAddressInventoryManager = 0x0D66E1A8; // chainsaw.InventoryManager                        
+                        pointerAddressGameClock = 0x0D671360; // share.GameClock
+
+                        break;
+                    }
+                case GameVersion.RE4R_WW_20260303_1:
                     {
                         pointerAddressCampaignManager = 0x0DA8D308; // chainsaw.CampaignManager
                         pointerAddressCharacterManager = 0x0DA8D3C0; // chainsaw.CharacterManager
